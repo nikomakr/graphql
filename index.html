@@ -3,11 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>dashboard — 01founders</title>
+<title>01Founders Sign in</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <style>
+    .error { color: #ff3333; margin-bottom: 1rem; font-size: 0.9rem; }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; margin-bottom: 0.5rem; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+<main id="login-view" class="view">
+  <div class="auth-window">
+    <header class="auth-titlebar">
+      <span class="dot dot-red"></span>
+      <span class="dot dot-yellow"></span>
+      <span class="dot dot-green"></span>
+      <span class="filename">auth.js</span>
+    </header>
+
+    <pre class="code-preview"><code><span class="c-key">query</span> {
+  <span class="c-fn">user</span> { id login }
+}</code></pre>
+
+    <form id="login-form" novalidate autocomplete="on">
+      <h1>sign in</h1>
+
+      <div class="field">
+        <label for="identifier">username or email</label>
+        <div class="input-row">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <input type="text" id="identifier" name="identifier" placeholder="jbloggs" autocomplete="username" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">password</label>
+        <div class="input-row">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+      </div>
+
+      <button type="submit">sign in</button>
+
+      <p id="login-error" class="error" role="alert" hidden></p>
+    </form>
+  </div>
+</main>
+
+<main id="profile-view" class="view" hidden>
 <div class="shell">
 
   <nav class="sidenav" aria-label="primary">
@@ -145,6 +198,8 @@
 
   </main>
 </div>
+</main>
 
+<script src="js/auth.js"></script>
 </body>
 </html>
