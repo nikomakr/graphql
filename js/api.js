@@ -34,3 +34,14 @@ async function runQuery(query, variables = {}) {
 
   return { success: true, data: json.data };
 }
+
+async function getIdentification() {
+  const query = `{ user { id login } }`;
+  const result = await runQuery(query);
+
+  if (!result.success) {
+    return result;
+  }
+
+  return { success: true, data: result.data.user[0] };
+}

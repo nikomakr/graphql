@@ -88,6 +88,13 @@ function clearError() {
 document.getElementById("identifier").addEventListener("input", clearError);
 document.getElementById("password").addEventListener("input", clearError);
 
+async function loadIdentification() {
+  const result = await getIdentification();
+  if (result.success) {
+    document.querySelector(".handle").textContent = result.data.login;
+  }
+}
+
 document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   clearError();
@@ -102,6 +109,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     const userId = decodeUserId(result.token);
     console.log("logged in, user id:", userId);
     showProfileView();
+    loadIdentification();
   } else if (result.error === "network") {
     showError("Can't reach the server. Check your connection and try again.");
   } else {
