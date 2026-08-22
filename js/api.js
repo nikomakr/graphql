@@ -67,7 +67,10 @@ async function getResultsWithObjects() {
 
 async function getXpTransactions() {
   const query = `{
-    transaction(where: { type: { _eq: "xp" } }, order_by: { createdAt: asc }) {
+    transaction(where: {
+      type: { _eq: "xp" },
+      invalidatedAt: { _is_null: true }
+    }, order_by: { createdAt: asc }) {
       amount
       path
       createdAt
@@ -121,4 +124,38 @@ function isCheckpoints(path) {
 
 function isFellowship(path) {
   return path.startsWith("/london/div-01") && !isFellowshipJSPiscine(path);
+}
+
+async function getTotalXp() {
+  const result = await getXpTransactions();
+  if (!result.success) {
+    return result;
+  }
+
+  const total = result.data.reduce((sum, row) => sum + row.amount, 0);
+  return { success: true, total };
+}
+
+async function getAuditStats() {
+  const idResult = await getIdentification();
+  if (!idResult.success) {
+    return idResult;
+  }
+  const myId = idResult.data.id;
+
+  const query = `{
+    given: audit(where: { auditorId: { _eq: ${myId} } }) { grade }
+    received: audit(where: { group: { captainId: { _eq: ${myId} } } }) { grade }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  const given = result.data.given.length;
+  const received = result.data.received.length;
+  const ratio = received > 0 ? (given / received).toFixed(2) : "0.00";
+
+  return { success: true, given, received, ratio };
 }

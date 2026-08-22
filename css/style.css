@@ -192,6 +192,16 @@ button { font: inherit; }
   color: var(--text-dim);
 }
 
+.xp-total {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.xp-total strong {
+  color: var(--neon-green);
+}
+
 .level strong { color: var(--neon-cyan); }
 
 .audit-ratio {
@@ -490,4 +500,50 @@ button { font: inherit; }
 @media (max-width: 460px) {
   #login-form { padding: 22px 18px 20px; }
   #login-view .code-preview { padding: 14px 16px; }
+}
+
+.info-icon {
+  position: relative;
+  display: inline-flex;
+  color: var(--text-dim);
+  cursor: help;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.info-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.info-icon:hover,
+.info-icon:focus-visible {
+  color: var(--neon-cyan);
+  outline: none;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  background: var(--void);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  padding: 10px 12px;
+  border-radius: 6px;
+  box-shadow: 0 0 14px rgba(0, 242, 254, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.info-icon:hover .tooltip,
+.info-icon:focus-visible .tooltip {
+  opacity: 1;
 }

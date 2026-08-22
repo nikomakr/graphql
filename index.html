@@ -110,6 +110,17 @@
           <h1 id="profile-heading" class="handle">username or email</h1>
           <p class="user-id">id #000000</p>
           <p class="level">level <strong>22</strong></p>
+          <p class="xp-total">
+            xp <strong id="xp-total-value">0</strong>
+            <span class="info-icon" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/>
+                <line x1="12" y1="11" x2="12" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <circle cx="12" cy="8" r="1" fill="currentColor"/>
+            </svg>
+            <span class="tooltip" role="tooltip">Total of all earned XP across Fellowship Projects, Go Piscine, Discovery JS Piscine, Fellowship JS Piscine and checkpoints combined.</span>
+          </span>
+        </p>
         </div>
       </div>
 
@@ -118,9 +129,9 @@
           <span class="up-label">up 103.5k</span>
           <span class="down-label">down 89.2k</span>
         </div>
-        <svg viewBox="0 0 300 14" preserveAspectRatio="none" class="ratio-bar" role="img" aria-label="audit ratio, up to down">
+          <svg viewBox="0 0 300 14" preserveAspectRatio="none" class="ratio-bar" role="img" aria-label="audit ratio, up to down">
           <rect x="0" y="0" width="300" height="14" rx="7" fill="var(--card-alt)"/>
-          <rect x="0" y="0" width="172" height="14" rx="7" fill="var(--neon-green)"/>
+          <rect id="ratio-fill" x="0" y="0" width="172" height="14" rx="7" fill="var(--neon-green)"/>
         </svg>
         <p class="ratio-value">1.16</p>
       </div>

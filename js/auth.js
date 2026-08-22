@@ -103,6 +103,25 @@ async function loadIdentification() {
     document.querySelector(".handle").textContent = result.data.login;
     document.querySelector(".user-id").textContent = `id #${result.data.id}`;
   }
+
+  const xpResult = await getTotalXp();
+  if (xpResult.success) {
+    document.getElementById("xp-total-value").textContent =
+      xpResult.total.toLocaleString();
+  }
+
+  const auditResult = await getAuditStats();
+  if (auditResult.success) {
+    document.querySelector(".up-label").textContent =
+      `given ${auditResult.given}`;
+    document.querySelector(".down-label").textContent =
+      `received ${auditResult.received}`;
+    document.querySelector(".ratio-value").textContent = auditResult.ratio;
+
+    const total = auditResult.given + auditResult.received;
+    const fillWidth = total > 0 ? (auditResult.given / total) * 300 : 150;
+    document.getElementById("ratio-fill").setAttribute("width", fillWidth);
+  }
 }
 
 document.getElementById("login-form").addEventListener("submit", async (e) => {
