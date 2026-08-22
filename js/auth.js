@@ -55,8 +55,42 @@ function decodeUserId(token) {
   }
 }
 
+function showLoginView() {
+  document.getElementById("login-view").hidden = false;
+  document.getElementById("profile-view").hidden = true;
+}
+
+function showProfileView() {
+  document.getElementById("login-view").hidden = true;
+  document.getElementById("profile-view").hidden = false;
+}
+
+function logout() {
+  clearToken();
+  document.getElementById("identifier").value = "";
+  document.getElementById("password").value = "";
+  showLoginView();
+}
+
+document.getElementById("logout-btn").addEventListener("click", logout);
+function showError(message) {
+  const errorEl = document.getElementById("login-error");
+  errorEl.textContent = message;
+  errorEl.hidden = false;
+}
+
+function clearError() {
+  const errorEl = document.getElementById("login-error");
+  errorEl.textContent = "";
+  errorEl.hidden = true;
+}
+
+document.getElementById("identifier").addEventListener("input", clearError);
+document.getElementById("password").addEventListener("input", clearError);
+
 document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+  clearError();
 
   const identifier = document.getElementById("identifier").value;
   const password = document.getElementById("password").value;
@@ -67,7 +101,10 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     storeToken(result.token);
     const userId = decodeUserId(result.token);
     console.log("logged in, user id:", userId);
+    showProfileView();
+  } else if (result.error === "network") {
+    showError("Can't reach the server. Check your connection and try again.");
   } else {
-    console.log("signIn failed:", result.error);
+    showError("Incorrect username/email or password.");
   }
 });
