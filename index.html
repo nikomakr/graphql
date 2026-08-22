@@ -133,7 +133,17 @@
           <rect x="0" y="0" width="300" height="14" rx="7" fill="var(--card-alt)"/>
           <rect id="ratio-fill" x="0" y="0" width="172" height="14" rx="7" fill="var(--neon-green)"/>
         </svg>
-        <p class="ratio-value">1.16</p>
+        <p class="ratio-value">
+          audit ratio: <strong id="ratio-value-text">1.16</strong>
+          <span class="info-icon" tabindex="0">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/>
+              <line x1="12" y1="11" x2="12" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <circle cx="12" cy="8" r="1" fill="currentColor"/>
+            </svg>
+            <span class="tooltip" role="tooltip">Audits you gave divided by audits you received. Above 1 means you audit more than you get audited.</span>
+          </span>
+        </p>
       </div>
     </section>
 

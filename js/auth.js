@@ -116,7 +116,8 @@ async function loadIdentification() {
       `given ${auditResult.given}`;
     document.querySelector(".down-label").textContent =
       `received ${auditResult.received}`;
-    document.querySelector(".ratio-value").textContent = auditResult.ratio;
+    document.getElementById("ratio-value-text").textContent =
+          auditResult.ratio;
 
     const total = auditResult.given + auditResult.received;
     const fillWidth = total > 0 ? (auditResult.given / total) * 300 : 150;

@@ -525,9 +525,9 @@ button { font: inherit; }
 .tooltip {
   position: absolute;
   bottom: 130%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 220px;
+  right: 0;
+  transform: none;
+  width: min(220px, 80vw);
   background: var(--void);
   border: 1px solid var(--border);
   color: var(--text);
