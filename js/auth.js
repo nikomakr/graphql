@@ -110,6 +110,8 @@ async function loadIdentification() {
       xpResult.total.toLocaleString();
   }
 
+  renderXpChart();
+
   const auditResult = await getAuditStats();
   if (auditResult.success) {
     document.querySelector(".up-label").textContent =
