@@ -45,6 +45,15 @@ function clearToken() {
   sessionStorage.removeItem("jwt");
 }
 
+function isTokenValid(token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 > Date.now();
+  } catch (err) {
+    return false;
+  }
+}
+
 function decodeUserId(token) {
   try {
     const payload = token.split(".")[1];
@@ -117,3 +126,13 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     showError("Incorrect username/email or password.");
   }
 });
+
+(function initSession() {
+  const token = getToken();
+  if (token && isTokenValid(token)) {
+    showProfileView();
+    loadIdentification();
+  } else {
+    showLoginView();
+  }
+})();
