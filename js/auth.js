@@ -92,6 +92,7 @@ async function loadIdentification() {
   const result = await getIdentification();
   if (result.success) {
     document.querySelector(".handle").textContent = result.data.login;
+    document.querySelector(".user-id").textContent = `id #${result.data.id}`;
   }
 }
 

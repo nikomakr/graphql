@@ -185,6 +185,13 @@ button { font: inherit; }
   color: var(--text-dim);
 }
 
+.user-id {
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
 .level strong { color: var(--neon-cyan); }
 
 .audit-ratio {
