@@ -45,3 +45,22 @@ async function getIdentification() {
 
   return { success: true, data: result.data.user[0] };
 }
+
+async function getResultsWithObjects() {
+  const query = `{
+    result {
+      id
+      grade
+      path
+      createdAt
+      object { name type }
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  return { success: true, data: result.data.result };
+}
