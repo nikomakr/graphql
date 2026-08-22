@@ -124,27 +124,38 @@
         </div>
       </div>
 
-      <div class="audit-ratio">
-        <div class="audit-labels">
-          <span class="up-label">up 103.5k</span>
-          <span class="down-label">down 89.2k</span>
-        </div>
-          <svg viewBox="0 0 300 14" preserveAspectRatio="none" class="ratio-bar" role="img" aria-label="audit ratio, up to down">
-          <rect x="0" y="0" width="300" height="14" rx="7" fill="var(--card-alt)"/>
-          <rect id="ratio-fill" x="0" y="0" width="172" height="14" rx="7" fill="var(--neon-green)"/>
-        </svg>
-        <p class="ratio-value">
-          audit ratio: <strong id="ratio-value-text">1.16</strong>
-          <span class="info-icon" tabindex="0">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/>
-              <line x1="12" y1="11" x2="12" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              <circle cx="12" cy="8" r="1" fill="currentColor"/>
-            </svg>
-            <span class="tooltip" role="tooltip">Audits you gave divided by audits you received. Above 1 means you audit more than you get audited.</span>
-          </span>
-        </p>
-      </div>
+<div class="audit-ratio">
+  <p class="audit-label">No of audits given vs received</p>
+
+  <svg viewBox="0 0 300 20" preserveAspectRatio="none" class="audit-bar audit-bar-top" role="img" aria-label="audits given vs received">
+    <rect id="seg-total-given" x="0" y="0" width="0" height="20"/>
+    <rect id="seg-total-received" x="0" y="0" width="0" height="20"/>
+    <text id="txt-total-given" y="14" text-anchor="middle"></text>
+    <text id="txt-total-received" y="14" text-anchor="middle"></text>
+  </svg>
+
+  <div class="audit-subgroup">
+    <p class="audit-sublabel">given — pass vs fail</p>
+    <svg viewBox="0 0 300 16" preserveAspectRatio="none" class="audit-bar" role="img" aria-label="given audits, pass vs fail">
+      <rect id="seg-given-pass" x="0" y="0" width="0" height="16"/>
+      <rect id="seg-given-fail" x="0" y="0" width="0" height="16"/>
+      <text id="txt-given-pass" y="11" text-anchor="middle"></text>
+      <text id="txt-given-fail" y="11" text-anchor="middle"></text>
+    </svg>
+  </div>
+
+  <div class="audit-subgroup">
+    <p class="audit-sublabel">received — pass vs fail</p>
+    <svg viewBox="0 0 300 16" preserveAspectRatio="none" class="audit-bar" role="img" aria-label="received audits, pass vs fail">
+      <rect id="seg-received-pass" x="0" y="0" width="0" height="16"/>
+      <rect id="seg-received-fail" x="0" y="0" width="0" height="16"/>
+      <text id="txt-received-pass" y="11" text-anchor="middle"></text>
+      <text id="txt-received-fail" y="11" text-anchor="middle"></text>
+    </svg>
+  </div>
+
+  <p class="audit-ratio-value">ratio <strong id="audit-ratio-text">0.00</strong></p>
+</div>
     </section>
 
 <section id="xp" class="card xp-panel" aria-labelledby="xp-heading">

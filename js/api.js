@@ -153,9 +153,33 @@ async function getAuditStats() {
     return result;
   }
 
-  const given = result.data.given.length;
-  const received = result.data.received.length;
+  function countPassFail(rows) {
+    let pass = 0;
+    let fail = 0;
+    rows.forEach((row) => {
+      if (row.grade === null) return;
+      if (row.grade >= 1) {
+        pass++;
+      } else {
+        fail++;
+      }
+    });
+    return { pass, fail };
+  }
+
+  const givenStats = countPassFail(result.data.given);
+  const receivedStats = countPassFail(result.data.received);
+
+  const given = givenStats.pass + givenStats.fail;
+  const received = receivedStats.pass + receivedStats.fail;
   const ratio = received > 0 ? (given / received).toFixed(2) : "0.00";
 
-  return { success: true, given, received, ratio };
+  return {
+    success: true,
+    givenPass: givenStats.pass,
+    givenFail: givenStats.fail,
+    receivedPass: receivedStats.pass,
+    receivedFail: receivedStats.fail,
+    ratio,
+  };
 }
