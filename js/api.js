@@ -64,3 +64,61 @@ async function getResultsWithObjects() {
 
   return { success: true, data: result.data.result };
 }
+
+async function getXpTransactions() {
+  const query = `{
+    transaction(where: { type: { _eq: "xp" } }, order_by: { createdAt: asc }) {
+      amount
+      path
+      createdAt
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  return { success: true, data: result.data.transaction };
+}
+
+async function getPiscineResults() {
+  const query = `{
+    result(where: { _or: [
+      { path: { _like: "%discovery-piscine-3w%" } },
+      { path: { _like: "%piscine-go-s2wft%" } }
+    ] }) {
+      id
+      grade
+      path
+      createdAt
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  return { success: true, data: result.data.result };
+}
+
+function isGoPiscine(path) {
+  return path.startsWith("/london/piscine-go-s2wft");
+}
+
+function isJSPiscine(path) {
+  return path.startsWith("/london/discovery-piscine-3w");
+}
+
+function isFellowshipJSPiscine(path) {
+  return path.startsWith("/london/div-01/piscine-js-up");
+}
+
+function isCheckpoints(path) {
+  return path.startsWith("/london/div-01/check-points");
+}
+
+function isFellowship(path) {
+  return path.startsWith("/london/div-01") && !isFellowshipJSPiscine(path);
+}
