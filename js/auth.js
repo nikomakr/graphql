@@ -111,8 +111,9 @@ async function loadIdentification() {
   }
 
   renderXpChart();
+  renderXpByProjectChart();
 
-const auditResult = await getAuditStats();
+  const auditResult = await getAuditStats();
 if (auditResult.success) {
   const given = auditResult.givenPass + auditResult.givenFail;
   const received = auditResult.receivedPass + auditResult.receivedFail;

@@ -126,6 +126,15 @@ function isFellowship(path) {
   return path.startsWith("/london/div-01") && !isFellowshipJSPiscine(path);
 }
 
+function isDirectFellowshipProject(path) {
+  const segments = path.split("/").filter(Boolean);
+  return (
+    segments.length === 3 &&
+    segments[0] === "london" &&
+    segments[1] === "div-01"
+  );
+}
+
 async function getTotalXp() {
   const result = await getXpTransactions();
   if (!result.success) {
@@ -182,4 +191,37 @@ async function getAuditStats() {
     receivedFail: receivedStats.fail,
     ratio,
   };
+}
+
+async function getXpByProject() {
+  const query = `{
+    transaction(where: {
+      type: { _eq: "xp" },
+      invalidatedAt: { _is_null: true },
+      path: { _like: "/london/div-01%" }
+    }) {
+      amount
+      path
+      object { name }
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  const totals = {};
+  result.data.transaction.forEach((row) => {
+    if (!row.object) return;
+    if (!isDirectFellowshipProject(row.path)) return;
+    const name = row.object.name;
+    totals[name] = (totals[name] || 0) + row.amount;
+  });
+
+  const items = Object.entries(totals)
+    .map(([name, amount]) => ({ name, amount }))
+    .sort((a, b) => b.amount - a.amount);
+
+  return { success: true, items };
 }

@@ -108,9 +108,12 @@ button { font: inherit; }
   grid-template-areas:
     "profile profile profile"
     "xp xp skills"
+    "xpproject xpproject xpproject"
     "projects projects projects";
   gap: 20px;
 }
+
+#xp-by-project { grid-area: xpproject; }
 
 #profile { grid-area: profile; }
 #xp { grid-area: xp; }
@@ -347,6 +350,7 @@ button { font: inherit; }
     grid-template-areas:
       "profile profile"
       "xp skills"
+      "xpproject xpproject"
       "projects projects";
   }
 }
@@ -361,6 +365,7 @@ button { font: inherit; }
       "profile"
       "xp"
       "skills"
+      "xpproject"
       "projects";
     padding: 16px;
   }
@@ -576,3 +581,47 @@ button { font: inherit; }
 
 #txt-total-given, #txt-given-pass, #txt-given-fail, #txt-received-pass { fill: #06121d; }
 #txt-total-received, #txt-received-fail { fill: #ffffff; }
+
+/* ---------- treemap custom tooltip ---------- */
+
+.xp-project-wrap {
+  position: relative;
+}
+
+.treemap-floating-tooltip {
+  position: absolute;
+  background: var(--void);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.treemap-cell rect {
+  transition: fill-opacity 0.3s ease;
+}
+
+.treemap-cell:hover rect {
+  fill-opacity: 1;
+}
+
+.treemap-label {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  fill: #06121d;
+  pointer-events: none;
+}
+
+.treemap-value {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: #06121d;
+  opacity: 0.8;
+  pointer-events: none;
+}
