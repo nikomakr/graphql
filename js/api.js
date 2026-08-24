@@ -311,3 +311,22 @@ async function getPiscineBreakdown() {
 
   return { success: true, piscines };
 }
+
+async function getCurrentLevel() {
+  const query = `{
+    transaction(where: { type: { _eq: "level" } }, order_by: { createdAt: desc }, limit: 1) {
+      amount
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  if (result.data.transaction.length === 0) {
+    return { success: true, level: 0 };
+  }
+
+  return { success: true, level: result.data.transaction[0].amount };
+}

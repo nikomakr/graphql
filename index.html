@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>01Founders Sign in</title>
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
     .error { color: #ff3333; margin-bottom: 1rem; font-size: 0.9rem; }
     .form-group { margin-bottom: 1rem; }
@@ -64,7 +64,7 @@
 <div class="shell">
 
   <nav class="sidenav" aria-label="primary">
-    <a class="nav-logo" href="#" aria-label="dashboard home">
+    <a class="nav-logo" href="." aria-label="dashboard home">
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
     </a>
     <ul class="nav-list">
@@ -109,23 +109,21 @@
         <div>
           <h1 id="profile-heading" class="handle">username or email</h1>
           <p class="user-id">id #000000</p>
-          <p class="level">level <strong>22</strong></p>
+          <p class="level">level <strong id="level-value">0</strong></p>
           <p class="xp-total">
-            xp <strong id="xp-total-value">0</strong>
+            total xp <strong id="xp-total-value">0</strong>
             <span class="info-icon" tabindex="0">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4"/>
-                <line x1="12" y1="11" x2="12" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <circle cx="12" cy="8" r="1" fill="currentColor"/>
+
             </svg>
-            <span class="tooltip" role="tooltip">Total of all earned XP across Fellowship Projects, Go Piscine, Discovery JS Piscine, Fellowship JS Piscine and checkpoints combined.</span>
           </span>
         </p>
         </div>
       </div>
 
 <div class="audit-ratio">
-  <p class="audit-label">No of audits given vs received</p>
+  <p class="audit-label">No of audits </p>
+  <p class="audit-sublabel">given vs received</p>
 
   <svg viewBox="0 0 300 20" preserveAspectRatio="none" class="audit-bar audit-bar-top" role="img" aria-label="audits given vs received">
     <rect id="seg-total-given" x="0" y="0" width="0" height="20"/>

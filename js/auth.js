@@ -104,6 +104,11 @@ async function loadIdentification() {
     document.querySelector(".user-id").textContent = `id #${result.data.id}`;
   }
 
+  const levelResult = await getCurrentLevel();
+  if (levelResult.success) {
+    document.getElementById("level-value").textContent = levelResult.level;
+  }
+
   const xpResult = await getTotalXp();
   if (xpResult.success) {
     document.getElementById("xp-total-value").textContent =
@@ -114,81 +119,83 @@ async function loadIdentification() {
   renderXpByProjectChart();
 
   const auditResult = await getAuditStats();
-if (auditResult.success) {
-  const given = auditResult.givenPass + auditResult.givenFail;
-  const received = auditResult.receivedPass + auditResult.receivedFail;
-  const totalAll = given + received;
-  const barWidth = 300;
+  if (auditResult.success) {
+    const given = auditResult.givenPass + auditResult.givenFail;
+    const received = auditResult.receivedPass + auditResult.receivedFail;
+    const totalAll = given + received;
+    const barWidth = 300;
 
-  // top bar: given vs received
-  const givenWidth = totalAll > 0 ? (given / totalAll) * barWidth : 0;
-  const receivedWidth = barWidth - givenWidth;
+    // top bar: given vs received
+    const givenWidth = totalAll > 0 ? (given / totalAll) * barWidth : 0;
+    const receivedWidth = barWidth - givenWidth;
 
-  const totalGivenRect = document.getElementById("seg-total-given");
-  const totalReceivedRect = document.getElementById("seg-total-received");
-  totalGivenRect.setAttribute("width", givenWidth);
-  totalReceivedRect.setAttribute("x", givenWidth);
-  totalReceivedRect.setAttribute("width", receivedWidth);
+    const totalGivenRect = document.getElementById("seg-total-given");
+    const totalReceivedRect = document.getElementById("seg-total-received");
+    totalGivenRect.setAttribute("width", givenWidth);
+    totalReceivedRect.setAttribute("x", givenWidth);
+    totalReceivedRect.setAttribute("width", receivedWidth);
 
-  document.getElementById("txt-total-given").setAttribute("x", givenWidth / 2);
-  document.getElementById("txt-total-given").textContent =
-    givenWidth > 24 ? given : "";
-  document
-    .getElementById("txt-total-received")
-    .setAttribute("x", givenWidth + receivedWidth / 2);
-  document.getElementById("txt-total-received").textContent =
-    receivedWidth > 24 ? received : "";
+    document
+      .getElementById("txt-total-given")
+      .setAttribute("x", givenWidth / 2);
+    document.getElementById("txt-total-given").textContent =
+      givenWidth > 24 ? given : "";
+    document
+      .getElementById("txt-total-received")
+      .setAttribute("x", givenWidth + receivedWidth / 2);
+    document.getElementById("txt-total-received").textContent =
+      receivedWidth > 24 ? received : "";
 
-  // sub bar: given pass vs fail
-  const givenPassWidth =
-    given > 0 ? (auditResult.givenPass / given) * barWidth : 0;
-  const givenFailWidth = barWidth - givenPassWidth;
+    // sub bar: given pass vs fail
+    const givenPassWidth =
+      given > 0 ? (auditResult.givenPass / given) * barWidth : 0;
+    const givenFailWidth = barWidth - givenPassWidth;
 
-  document
-    .getElementById("seg-given-pass")
-    .setAttribute("width", givenPassWidth);
-  document.getElementById("seg-given-fail").setAttribute("x", givenPassWidth);
-  document
-    .getElementById("seg-given-fail")
-    .setAttribute("width", givenFailWidth);
-  document
-    .getElementById("txt-given-pass")
-    .setAttribute("x", givenPassWidth / 2);
-  document.getElementById("txt-given-pass").textContent =
-    givenPassWidth > 16 ? auditResult.givenPass : "";
-  document
-    .getElementById("txt-given-fail")
-    .setAttribute("x", givenPassWidth + givenFailWidth / 2);
-  document.getElementById("txt-given-fail").textContent =
-    givenFailWidth > 16 ? auditResult.givenFail : "";
+    document
+      .getElementById("seg-given-pass")
+      .setAttribute("width", givenPassWidth);
+    document.getElementById("seg-given-fail").setAttribute("x", givenPassWidth);
+    document
+      .getElementById("seg-given-fail")
+      .setAttribute("width", givenFailWidth);
+    document
+      .getElementById("txt-given-pass")
+      .setAttribute("x", givenPassWidth / 2);
+    document.getElementById("txt-given-pass").textContent =
+      givenPassWidth > 16 ? auditResult.givenPass : "";
+    document
+      .getElementById("txt-given-fail")
+      .setAttribute("x", givenPassWidth + givenFailWidth / 2);
+    document.getElementById("txt-given-fail").textContent =
+      givenFailWidth > 16 ? auditResult.givenFail : "";
 
-  // sub bar: received pass vs fail
-  const receivedPassWidth =
-    received > 0 ? (auditResult.receivedPass / received) * barWidth : 0;
-  const receivedFailWidth = barWidth - receivedPassWidth;
+    // sub bar: received pass vs fail
+    const receivedPassWidth =
+      received > 0 ? (auditResult.receivedPass / received) * barWidth : 0;
+    const receivedFailWidth = barWidth - receivedPassWidth;
 
-  document
-    .getElementById("seg-received-pass")
-    .setAttribute("width", receivedPassWidth);
-  document
-    .getElementById("seg-received-fail")
-    .setAttribute("x", receivedPassWidth);
-  document
-    .getElementById("seg-received-fail")
-    .setAttribute("width", receivedFailWidth);
-  document
-    .getElementById("txt-received-pass")
-    .setAttribute("x", receivedPassWidth / 2);
-  document.getElementById("txt-received-pass").textContent =
-    receivedPassWidth > 16 ? auditResult.receivedPass : "";
-  document
-    .getElementById("txt-received-fail")
-    .setAttribute("x", receivedPassWidth + receivedFailWidth / 2);
-  document.getElementById("txt-received-fail").textContent =
-    receivedFailWidth > 16 ? auditResult.receivedFail : "";
+    document
+      .getElementById("seg-received-pass")
+      .setAttribute("width", receivedPassWidth);
+    document
+      .getElementById("seg-received-fail")
+      .setAttribute("x", receivedPassWidth);
+    document
+      .getElementById("seg-received-fail")
+      .setAttribute("width", receivedFailWidth);
+    document
+      .getElementById("txt-received-pass")
+      .setAttribute("x", receivedPassWidth / 2);
+    document.getElementById("txt-received-pass").textContent =
+      receivedPassWidth > 16 ? auditResult.receivedPass : "";
+    document
+      .getElementById("txt-received-fail")
+      .setAttribute("x", receivedPassWidth + receivedFailWidth / 2);
+    document.getElementById("txt-received-fail").textContent =
+      receivedFailWidth > 16 ? auditResult.receivedFail : "";
 
-  document.getElementById("audit-ratio-text").textContent = auditResult.ratio;
-}
+    document.getElementById("audit-ratio-text").textContent = auditResult.ratio;
+  }
 
   renderPiscineStats();
 
