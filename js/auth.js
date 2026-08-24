@@ -190,6 +190,8 @@ if (auditResult.success) {
   document.getElementById("audit-ratio-text").textContent = auditResult.ratio;
 }
 
+  renderPiscineStats();
+
   const projectResult = await getProjectPassFail();
   if (projectResult.success) {
     document.getElementById("project-pass-count").textContent =

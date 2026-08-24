@@ -106,12 +106,15 @@ button { font: inherit; }
   display: grid;
   grid-template-columns: 1.1fr 1fr 1fr;
   grid-template-areas:
-    "profile profile profile"
-    "xp xp skills"
-    "xpproject xpproject xpproject"
-    "projects projects projects";
+  "profile profile profile"
+  "xp xp skills"
+  "xpproject xpproject xpproject"
+  "projects projects projects"
+  "piscine piscine piscine";
   gap: 20px;
 }
+
+#piscine { grid-area: piscine; }
 
 #xp-by-project { grid-area: xpproject; }
 
@@ -347,11 +350,12 @@ button { font: inherit; }
 @media (max-width: 960px) {
   .dashboard {
     grid-template-columns: 1fr 1fr;
-    grid-template-areas:
+grid-template-areas:
       "profile profile"
       "xp skills"
       "xpproject xpproject"
-      "projects projects";
+      "projects projects"
+      "piscine piscine";
   }
 }
 
@@ -361,12 +365,13 @@ button { font: inherit; }
   .nav-item { width: 44px; height: 44px; }
   .dashboard {
     grid-template-columns: 1fr;
-    grid-template-areas:
+grid-template-areas:
       "profile"
       "xp"
       "skills"
       "xpproject"
-      "projects";
+      "projects"
+      "piscine";
     padding: 16px;
   }
   .profile-widget { flex-direction: column; align-items: flex-start; }

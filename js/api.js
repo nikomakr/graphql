@@ -87,13 +87,12 @@ async function getXpTransactions() {
 
 async function getPiscineResults() {
   const query = `{
-    result(where: { _or: [
-      { path: { _like: "%discovery-piscine-3w%" } },
-      { path: { _like: "%piscine-go-s2wft%" } }
-    ] }) {
+    result(where: { path: { _like: "%piscine%" } }) {
       id
       grade
       path
+      objectId
+      object { name }
       createdAt
     }
   }`;
@@ -254,4 +253,61 @@ async function getProjectPassFail() {
   const passPct = total > 0 ? Math.round((pass / total) * 100) : 0;
 
   return { success: true, pass, fail, passPct };
+}
+
+function extractPiscineKey(path) {
+  const segments = path.split("/").filter(Boolean);
+  const seg = segments.find((s) => s.toLowerCase().includes("piscine"));
+  return seg || "other";
+}
+
+function prettifyPiscineKey(key) {
+  return key.replace(/-/g, " ");
+}
+
+async function getPiscineBreakdown() {
+  const result = await getPiscineResults();
+  if (!result.success) {
+    return result;
+  }
+
+  const groups = {};
+
+  result.data.forEach((row) => {
+    if (!row.object) return;
+    const key = extractPiscineKey(row.path);
+
+    if (!groups[key]) {
+      groups[key] = {};
+    }
+    const exerciseKey = row.objectId;
+    if (!groups[key][exerciseKey]) {
+      groups[key][exerciseKey] = {
+        name: row.object.name,
+        attempts: 0,
+        passed: false,
+      };
+    }
+    groups[key][exerciseKey].attempts++;
+    if (row.grade !== null && row.grade >= 1) {
+      groups[key][exerciseKey].passed = true;
+    }
+  });
+
+  const piscines = Object.entries(groups)
+    .map(([key, exercises]) => {
+      const list = Object.values(exercises).sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
+      return {
+        key,
+        label: prettifyPiscineKey(key),
+        exercises: list.slice(0, 3),
+        totalCount: list.length,
+        passCount: list.filter((e) => e.passed).length,
+      };
+    })
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+  return { success: true, piscines };
 }
