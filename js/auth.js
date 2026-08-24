@@ -189,6 +189,16 @@ if (auditResult.success) {
 
   document.getElementById("audit-ratio-text").textContent = auditResult.ratio;
 }
+
+  const projectResult = await getProjectPassFail();
+  if (projectResult.success) {
+    document.getElementById("project-pass-count").textContent =
+      projectResult.pass;
+    document.getElementById("project-fail-count").textContent =
+      projectResult.fail;
+    document.getElementById("project-pass-pct").textContent =
+      `${projectResult.passPct}%`;
+  }
 }
 
 document.getElementById("login-form").addEventListener("submit", async (e) => {

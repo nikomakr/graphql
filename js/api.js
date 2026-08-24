@@ -225,3 +225,33 @@ async function getXpByProject() {
 
   return { success: true, items };
 }
+
+async function getProjectPassFail() {
+  const query = `{
+    result(where: { object: { type: { _eq: "project" } } }) {
+      grade
+      object { type }
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  let pass = 0;
+  let fail = 0;
+  result.data.result.forEach((row) => {
+    if (row.grade === null) return;
+    if (row.grade >= 1) {
+      pass++;
+    } else {
+      fail++;
+    }
+  });
+
+  const total = pass + fail;
+  const passPct = total > 0 ? Math.round((pass / total) * 100) : 0;
+
+  return { success: true, pass, fail, passPct };
+}

@@ -625,3 +625,30 @@ button { font: inherit; }
   opacity: 0.8;
   pointer-events: none;
 }
+
+.project-ratio {
+  margin-bottom: 16px;
+}
+
+.project-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin: 0 0 16px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
+.feed-heading {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  text-transform: lowercase;
+}
+
+.stat-item strong { color: var(--text); }
+.stat-pass strong { color: var(--neon-green); }
+.stat-fail strong { color: var(--fail); }
