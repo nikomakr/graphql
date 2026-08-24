@@ -85,4 +85,4 @@ graphql-profile/
 
 ## Hosting
 
-This project is hosted on [platform name — GitHub Pages / Netlify / Vercel].
+This project is hosted on GitHub Pages: [https://nikomakr.github.io/graphql/](https://nikomakr.github.io/graphql/)
