@@ -657,3 +657,12 @@ grid-template-areas:
 .stat-item strong { color: var(--text); }
 .stat-pass strong { color: var(--neon-green); }
 .stat-fail strong { color: var(--fail); }
+
+.dev-title {
+  margin: 6px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--neon-purple);
+  font-family: var(--font-mono);
+  text-shadow: 0 0 12px rgba(127, 0, 255, 0.4);
+}

@@ -64,6 +64,15 @@ function decodeUserId(token) {
   }
 }
 
+function getLevelTitle(level) {
+  if (level <= 9) return "Aspiring Developer";
+  if (level <= 19) return "Beginner Developer";
+  if (level <= 32) return "Apprentice Developer";
+  if (level <= 41) return "Assistant Developer";
+  if (level <= 49) return "Basic Developer";
+  return "Junior Developer";
+}
+
 function showLoginView() {
   document.getElementById("login-view").hidden = false;
   document.getElementById("profile-view").hidden = true;
@@ -136,6 +145,9 @@ async function loadIdentification() {
   const levelResult = await getCurrentLevel();
   if (levelResult.success) {
     document.getElementById("level-value").textContent = levelResult.level;
+    document.getElementById("dev-title").textContent = getLevelTitle(
+      levelResult.level,
+    );
   }
 
   const xpResult = await getTotalXp();
