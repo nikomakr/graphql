@@ -355,3 +355,28 @@ async function getPassedProjects() {
 
   return { success: true, items };
 }
+
+async function getSkillLevels() {
+  const query = `{
+    transaction(where: { type: { _like: "skill_%" }, invalidatedAt: { _is_null: true } }, order_by: { createdAt: desc }) {
+      type
+      amount
+      createdAt
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  const latest = {};
+  result.data.transaction.forEach((row) => {
+    const skillKey = row.type.replace("skill_", "");
+    if (!(skillKey in latest)) {
+      latest[skillKey] = row.amount;
+    }
+  });
+
+  return { success: true, latest };
+}

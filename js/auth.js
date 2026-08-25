@@ -227,6 +227,7 @@ async function loadIdentification() {
   }
 
   renderPiscineStats();
+  renderSkillMatrix();
 
   loadProjectsFeed();
 

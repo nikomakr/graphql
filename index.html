@@ -188,27 +188,10 @@
 </div>
   </section>
 
-    <section id="skills" class="card skill-matrix" aria-labelledby="skills-heading">
-      <h2 id="skills-heading">skill matrix</h2>
-      <svg viewBox="0 0 240 240" class="radar-chart" role="img" aria-label="skill levels across languages">
-        <g class="radar-grid">
-          <polygon points="120,20 210,80 175,190 65,190 30,80"/>
-          <polygon points="120,52 172,90 152,158 88,158 68,90"/>
-          <polygon points="120,84 134,100 129,126 111,126 106,100"/>
-          <line x1="120" y1="120" x2="120" y2="20"/>
-          <line x1="120" y1="120" x2="210" y2="80"/>
-          <line x1="120" y1="120" x2="175" y2="190"/>
-          <line x1="120" y1="120" x2="65" y2="190"/>
-          <line x1="120" y1="120" x2="30" y2="80"/>
-        </g>
-        <polygon class="radar-fill" fill="rgba(127,0,255,0.25)" stroke="#7f00ff" stroke-width="1.5" points="120,40 190,88 160,175 85,168 55,95"/>
-        <text x="120" y="12" class="radar-label" text-anchor="middle">go</text>
-        <text x="222" y="80" class="radar-label" text-anchor="start">js</text>
-        <text x="180" y="205" class="radar-label" text-anchor="middle">rust</text>
-        <text x="60" y="205" class="radar-label" text-anchor="middle">back-end</text>
-        <text x="18" y="80" class="radar-label" text-anchor="end">front-end</text>
-      </svg>
-    </section>
+<section id="skills" class="card skill-matrix" aria-labelledby="skills-heading">
+  <h2 id="skills-heading">technologies</h2>
+  <svg id="skill-radar-technologies" viewBox="0 0 240 240" class="radar-chart" role="img" aria-label="technology skill levels"></svg>
+</section>
 
     <section id="projects" class="card projects-feed" aria-labelledby="projects-heading">
 
@@ -239,6 +222,7 @@
 <script src="js/charts/xpOverTime.js"></script>
 <script src="js/charts/xpByProject.js"></script>
 <script src="js/charts/piscineStats.js"></script>
+<script src="js/charts/skillMatrix.js"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>
