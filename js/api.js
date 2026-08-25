@@ -330,3 +330,28 @@ async function getCurrentLevel() {
 
   return { success: true, level: result.data.transaction[0].amount };
 }
+
+async function getPassedProjects() {
+  const query = `{
+    transaction(where: {
+      type: { _eq: "xp" },
+      invalidatedAt: { _is_null: true },
+      path: { _like: "/london/div-01%" }
+    }, order_by: { createdAt: desc }) {
+      path
+      createdAt
+      object { name }
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  const items = result.data.transaction
+    .filter((row) => row.object && isDirectFellowshipProject(row.path))
+    .map((row) => ({ name: row.object.name, date: row.createdAt }));
+
+  return { success: true, items };
+}

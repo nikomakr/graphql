@@ -81,6 +81,35 @@ function logout() {
   showLoginView();
 }
 
+function passedProjectRow(item) {
+  const dateStr = item.date
+    ? new Date(item.date).toLocaleDateString(undefined, {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : "";
+  return `
+    <article class="project-row">
+      <header>
+        <p class="project-name">${item.name}</p>
+        <p class="project-meta">passed ${dateStr}</p>
+      </header>
+      <span class="badge badge-pass">pass</span>
+    </article>
+  `;
+}
+
+async function loadProjectsFeed() {
+  const result = await getPassedProjects();
+  if (!result.success) {
+    return;
+  }
+  document.querySelector("#projects .feed-scroll").innerHTML = result.items
+    .map(passedProjectRow)
+    .join("");
+}
+
 document.getElementById("logout-btn").addEventListener("click", logout);
 function showError(message) {
   const errorEl = document.getElementById("login-error");
@@ -198,6 +227,8 @@ async function loadIdentification() {
   }
 
   renderPiscineStats();
+
+  loadProjectsFeed();
 
   const projectResult = await getProjectPassFail();
   if (projectResult.success) {
