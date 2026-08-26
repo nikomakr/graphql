@@ -2,8 +2,11 @@
 
 :root {
   --void: #0d1117;
-  --card: #161b22;
-  --card-alt: #1c2330;
+--card: #1e2430;
+--card-alt: #2a3140;
+--metal-1: #3a4150;
+--metal-2: #232a35;
+--metal-3: #171c24;
   --border: #262f3b;
   --text: #e6edf3;
   --text-dim: #7d8794;
@@ -37,7 +40,7 @@ button { font: inherit; }
 
 .shell {
   display: grid;
-  grid-template-columns: 84px 1fr;
+  grid-template-columns: 50px 1fr;
   min-height: 100vh;
 }
 
@@ -60,24 +63,20 @@ button { font: inherit; }
   filter: drop-shadow(0 0 6px rgba(31, 182, 201, 0.5));
 }
 
-.nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
+.sidenav {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  justify-content: center;
+  gap: 20px;
 }
 
 .nav-item {
-  width: 56px;
-  height: 56px;
+  width: 34px;
+  height: 34px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
   border-radius: var(--radius);
   color: var(--text-dim);
   background: transparent;
@@ -86,8 +85,8 @@ button { font: inherit; }
   transition: all 0.3s ease;
 }
 
-.nav-item svg { width: 20px; height: 20px; }
-.nav-item span { font-family: var(--font-mono); font-size: 9px; }
+.nav-item svg { width: 16px; height: 16px; }
+.nav-item span { display: none; }
 
 .nav-item:hover,
 .nav-item.active {
@@ -102,6 +101,8 @@ button { font: inherit; }
 /* ---------- dashboard grid ---------- */
 
 .dashboard {
+  position: relative;
+  overflow: hidden;
   padding: 28px;
   display: grid;
   grid-template-columns: 1.1fr 1fr 1fr;
@@ -124,11 +125,12 @@ button { font: inherit; }
 #projects { grid-area: projects; }
 
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: linear-gradient(145deg, var(--metal-1) 0%, var(--metal-2) 45%, var(--metal-3) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius);
   padding: 22px;
   backdrop-filter: blur(6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 14px rgba(0, 0, 0, 0.35);
   transition: all 0.3s ease;
 }
 
@@ -360,7 +362,7 @@ grid-template-areas:
 }
 
 @media (max-width: 680px) {
-  .shell { grid-template-columns: 64px 1fr; }
+  .shell { grid-template-columns: 38px 1fr; }
   .nav-item span { display: none; }
   .nav-item { width: 44px; height: 44px; }
   .dashboard {
@@ -665,4 +667,20 @@ grid-template-areas:
   color: var(--neon-purple);
   font-family: var(--font-mono);
   text-shadow: 0 0 12px rgba(127, 0, 255, 0.4);
+}
+
+#matrix-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dashboard > .card {
+  position: relative;
+  z-index: 1;
 }

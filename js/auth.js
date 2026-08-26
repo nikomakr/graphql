@@ -81,6 +81,7 @@ function showLoginView() {
 function showProfileView() {
   document.getElementById("login-view").hidden = true;
   document.getElementById("profile-view").hidden = false;
+  initMatrixBackground();
 }
 
 function logout() {
