@@ -728,3 +728,25 @@ grid-template-areas:
 .audit-bar-wrap {
   position: relative;
 }
+
+.view-all-btn {
+  margin: 8px 0;
+  background: var(--card-alt);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-all-btn:hover {
+  color: var(--neon-cyan);
+  border-color: rgba(0, 242, 254, 0.35);
+}
+
+.piscine-full {
+  max-height: 220px;
+}

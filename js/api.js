@@ -313,8 +313,7 @@ async function getPiscineBreakdown() {
       return {
         key,
         label: prettifyPiscineKey(key),
-        exercises: list.slice(0, 3),
-        totalCount: list.length,
+        exercises: list,
         passCount: list.filter((e) => e.passed).length,
       };
     })
