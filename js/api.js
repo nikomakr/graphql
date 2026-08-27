@@ -390,3 +390,22 @@ async function getSkillLevels() {
 
   return { success: true, latest };
 }
+
+async function getLevelHistory() {
+  const query = `{
+    transaction(where: {
+      type: { _eq: "level" },
+      path: { _like: "/london/div-01%" }
+    }, order_by: { createdAt: asc }) {
+      amount
+      createdAt
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  return { success: true, data: result.data.transaction };
+}

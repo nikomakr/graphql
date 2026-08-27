@@ -750,3 +750,51 @@ grid-template-areas:
 .piscine-full {
   max-height: 220px;
 }
+
+.level-milestones {
+  flex: 1 1 340px;
+  min-width: 320px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.milestone-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  white-space: nowrap;
+}
+
+.milestone-check {
+  width: 14px;
+  color: var(--neon-green);
+  flex-shrink: 0;
+}
+
+.milestone-title {
+  color: var(--text-dim);
+}
+
+.milestone-done .milestone-title {
+  color: var(--text);
+}
+
+.milestone-date {
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.milestone-done .milestone-date {
+  color: var(--neon-cyan);
+}
+
+.milestone-pending .milestone-date {
+  font-style: italic;
+}
+
+.milestone-range {
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-size: 10px;
+}

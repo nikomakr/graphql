@@ -152,13 +152,13 @@ function decodeUserId(token) {
 }
 
 function getLevelTitle(level) {
-  if (level <= 9) return "Aspiring Developer";
-  if (level <= 19) return "Beginner Developer";
-  if (level <= 29) return "Apprentice Developer";
-  if (level <= 39) return "Assistant Developer";
-  if (level <= 49) return "Basic Developer";
-  if (level <= 54) return "Junior Developer";
-  if (level <= 59) return "Confirmed Developer";
+  if (level <= 10) return "Aspiring Developer";
+  if (level <= 20) return "Beginner Developer";
+  if (level <= 30) return "Apprentice Developer";
+  if (level <= 40) return "Assistant Developer";
+  if (level <= 50) return "Basic Developer";
+  if (level <= 55) return "Junior Developer";
+  if (level <= 60) return "Confirmed Developer";
   else return "Full-Stack Developer";
 }
 
@@ -248,6 +248,7 @@ async function loadIdentification() {
 
   renderXpChart();
   renderXpByProjectChart();
+  renderLevelMilestones();
 
   const auditResult = await getAuditStats();
   if (auditResult.success) {
