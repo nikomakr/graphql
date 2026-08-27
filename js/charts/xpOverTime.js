@@ -8,8 +8,12 @@ function formatXp(value) {
   return String(Math.round(value));
 }
 
-function formatDate(isoString) {
-  const d = new Date(isoString);
+function formatKb(amount) {
+  return Math.round(amount / 1000) + " kB";
+}
+
+function formatDateLabel(dateInput) {
+  const d = new Date(dateInput);
   return d.toLocaleDateString(undefined, {
     day: "numeric",
     month: "short",
@@ -25,13 +29,8 @@ async function renderXpChart() {
 
   const rows = result.data;
 
-  let running = 0;
-  const points = rows.map((row) => {
-    running += row.amount;
-    return { total: running, date: row.createdAt };
-  });
-
-  const maxXp = points[points.length - 1].total;
+  const startDate = new Date("2026-01-06T00:00:00Z");
+  const endDate = new Date();
 
   const leftMargin = 44;
   const rightMargin = 10;
@@ -42,13 +41,38 @@ async function renderXpChart() {
   const plotWidth = svgWidth - leftMargin - rightMargin;
   const plotHeight = svgHeight - topMargin - bottomMargin;
 
-  const coords = points.map((p, i) => {
-    const x =
-      leftMargin +
-      (points.length === 1 ? plotWidth : (i / (points.length - 1)) * plotWidth);
-    const y = topMargin + plotHeight - (p.total / maxXp) * plotHeight;
-    return { x, y };
+  function xForDate(dateStr) {
+    const d = new Date(dateStr);
+    const frac = (d - startDate) / (endDate - startDate);
+    return leftMargin + Math.max(0, Math.min(1, frac)) * plotWidth;
+  }
+
+  let running = 0;
+  const points = rows.map((row) => {
+    running += row.amount;
+    return {
+      total: running,
+      date: row.createdAt,
+      amount: row.amount,
+      isProject: !!(
+        row.object &&
+        row.object.type === "project" &&
+        isDirectFellowshipProject(row.path)
+      ),
+      name: row.object ? row.object.name : null,
+    };
   });
+
+  const maxXp = points[points.length - 1].total;
+
+  function yForTotal(total) {
+    return topMargin + plotHeight - (total / maxXp) * plotHeight;
+  }
+
+  const coords = points.map((p) => ({
+    x: xForDate(p.date),
+    y: yForTotal(p.total),
+  }));
 
   const linePath = coords
     .map((c, i) => `${i === 0 ? "M" : "L"}${c.x.toFixed(1)},${c.y.toFixed(1)}`)
@@ -61,21 +85,53 @@ async function renderXpChart() {
   document.getElementById("xp-point-marker").setAttribute("cx", last.x);
   document.getElementById("xp-point-marker").setAttribute("cy", last.y);
 
-  // Y-axis labels: 5 evenly spaced values from maxXp down to 0
   for (let i = 0; i <= 4; i++) {
     const value = maxXp * (1 - i / 4);
-    document.getElementById(`y-label-${i}`).textContent = formatXp(value);
+    document.getElementById(`y-label-${i}`).textContent = formatKb(value);
   }
 
-  // X-axis labels: first and last transaction date
-  document.getElementById("x-label-start").textContent = formatDate(
-    points[0].date,
-  );
-  document.getElementById("x-label-end").textContent = formatDate(
-    points[points.length - 1].date,
-  );
+  document.getElementById("x-label-start").textContent =
+    formatDateLabel(startDate);
+  document.getElementById("x-label-end").textContent = formatDateLabel(endDate);
 
-  // animate the line drawing in
+  const dotsGroup = document.getElementById("xp-project-dots");
+  dotsGroup.innerHTML = "";
+
+  const tooltip = document.getElementById("xp-dot-tooltip");
+  const svg = document.getElementById("xp-chart-svg");
+
+  points.forEach((p, i) => {
+    if (!p.isProject) return;
+    const c = coords[i];
+
+    const dot = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle",
+    );
+    dot.setAttribute("cx", c.x.toFixed(1));
+    dot.setAttribute("cy", c.y.toFixed(1));
+    dot.setAttribute("r", "4");
+    dot.setAttribute("class", "xp-project-dot");
+
+    const label = `${p.name} — ${formatKb(p.amount)} — ${formatDateLabel(p.date)}`;
+
+    dot.addEventListener("mouseenter", () => {
+      tooltip.textContent = label;
+      tooltip.hidden = false;
+    });
+    dot.addEventListener("mousemove", (e) => {
+      const wrapRect = svg.parentElement.getBoundingClientRect();
+      tooltip.style.left = "auto";
+      tooltip.style.right = `${wrapRect.right - e.clientX + 12}px`;
+      tooltip.style.top = `${e.clientY - wrapRect.top + 12}px`;
+    });
+    dot.addEventListener("mouseleave", () => {
+      tooltip.hidden = true;
+    });
+
+    dotsGroup.appendChild(dot);
+  });
+
   const lineEl = document.getElementById("xp-line-path");
   const fillEl = document.getElementById("xp-fill-path");
   const pointEl = document.getElementById("xp-point-marker");
@@ -85,14 +141,17 @@ async function renderXpChart() {
   lineEl.style.strokeDashoffset = length;
   fillEl.style.opacity = "0";
   pointEl.style.opacity = "0";
+  dotsGroup.style.opacity = "0";
 
   lineEl.getBoundingClientRect();
 
   lineEl.style.transition = "stroke-dashoffset 1.4s ease";
   fillEl.style.transition = "opacity 1s ease 0.6s";
   pointEl.style.transition = "opacity 0.4s ease 1.4s";
+  dotsGroup.style.transition = "opacity 0.5s ease 1.4s";
 
   lineEl.style.strokeDashoffset = "0";
   fillEl.style.opacity = "1";
   pointEl.style.opacity = "1";
+  dotsGroup.style.opacity = "1";
 }

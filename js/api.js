@@ -69,11 +69,13 @@ async function getXpTransactions() {
   const query = `{
     transaction(where: {
       type: { _eq: "xp" },
-      invalidatedAt: { _is_null: true }
+      invalidatedAt: { _is_null: true },
+      path: { _like: "/london/div-01%" }
     }, order_by: { createdAt: asc }) {
       amount
       path
       createdAt
+      object { name type }
     }
   }`;
 
@@ -82,7 +84,11 @@ async function getXpTransactions() {
     return result;
   }
 
-  return { success: true, data: result.data.transaction };
+  const filtered = result.data.transaction.filter(
+    (row) => !isFellowshipJSPiscine(row.path),
+  );
+
+  return { success: true, data: filtered };
 }
 
 async function getPiscineResults() {
@@ -152,8 +158,8 @@ async function getAuditStats() {
   const myId = idResult.data.id;
 
   const query = `{
-    given: audit(where: { auditorId: { _eq: ${myId} } }) { grade }
-    received: audit(where: { group: { captainId: { _eq: ${myId} } } }) { grade }
+    given: audit(where: { auditorId: { _eq: ${myId} } }) { closureType grade }
+    received: audit(where: { group: { captainId: { _eq: ${myId} } } }) { closureType grade }
   }`;
 
   const result = await runQuery(query);
@@ -161,33 +167,38 @@ async function getAuditStats() {
     return result;
   }
 
-  function countPassFail(rows) {
-    let pass = 0;
-    let fail = 0;
+  function countByClosure(rows) {
+    const counts = {};
     rows.forEach((row) => {
-      if (row.grade === null) return;
-      if (row.grade >= 1) {
-        pass++;
-      } else {
-        fail++;
-      }
+      const key = row.closureType || "pending";
+      counts[key] = (counts[key] || 0) + 1;
     });
-    return { pass, fail };
+    return counts;
   }
 
-  const givenStats = countPassFail(result.data.given);
-  const receivedStats = countPassFail(result.data.received);
+  const givenCounts = countByClosure(result.data.given);
 
-  const given = givenStats.pass + givenStats.fail;
-  const received = receivedStats.pass + receivedStats.fail;
+  let receivedPass = 0;
+  let receivedFail = 0;
+  result.data.received.forEach((row) => {
+    if (row.grade === null) return;
+    if (row.grade >= 1) {
+      receivedPass++;
+    } else {
+      receivedFail++;
+    }
+  });
+
+  const given = result.data.given.length;
+  const received = result.data.received.length;
   const ratio = received > 0 ? (given / received).toFixed(2) : "0.00";
 
   return {
     success: true,
-    givenPass: givenStats.pass,
-    givenFail: givenStats.fail,
-    receivedPass: receivedStats.pass,
-    receivedFail: receivedStats.fail,
+    givenCounts,
+    givenTotal: given,
+    receivedPass,
+    receivedFail,
     ratio,
   };
 }

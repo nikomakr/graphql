@@ -1,3 +1,90 @@
+const CLOSURE_COLORS = {
+  succeeded: "#00ff66",
+  failed: "#ff3860",
+  invalidated: "#7f00ff",
+  pending: "#00f2fe",
+  expired: "#3a4150",
+  unused: "#232a35",
+  autoFailed: "#ff3860",
+  canceled: "#3a4150",
+  reassigned: "#00f2fe",
+};
+
+const CLOSURE_LABELS = {
+  succeeded: "Succeeded",
+  failed: "Failed",
+  invalidated: "Invalidated",
+  pending: "Pending",
+  expired: "Expired",
+  unused: "Unused",
+  autoFailed: "Auto-failed",
+  canceled: "Canceled",
+  reassigned: "Reassigned",
+};
+
+const CLOSURE_ORDER = [
+  "succeeded",
+  "failed",
+  "invalidated",
+  "pending",
+  "expired",
+  "unused",
+  "autoFailed",
+  "canceled",
+  "reassigned",
+];
+
+function renderSegmentedBar(svgId, tooltipId, segments) {
+  const svg = document.getElementById(svgId);
+  const tooltip = document.getElementById(tooltipId);
+  svg.innerHTML = "";
+
+  const barWidth = 300;
+  const barHeight = parseFloat(svg.getAttribute("viewBox").split(" ")[3]);
+  const total = segments.reduce((sum, s) => sum + s.count, 0);
+  let x = 0;
+
+  segments.forEach((seg) => {
+    if (seg.count <= 0) return;
+    const width = total > 0 ? (seg.count / total) * barWidth : 0;
+
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", 0);
+    rect.setAttribute("width", width);
+    rect.setAttribute("height", barHeight);
+    rect.setAttribute("fill", seg.color);
+    rect.setAttribute("stroke", "var(--void)");
+    rect.setAttribute("stroke-width", "1.5");
+
+    rect.addEventListener("mouseenter", () => {
+      tooltip.textContent = `${seg.label}: ${seg.count}`;
+      tooltip.hidden = false;
+    });
+    rect.addEventListener("mousemove", (e) => {
+      const wrapRect = svg.parentElement.getBoundingClientRect();
+      tooltip.style.left = `${e.clientX - wrapRect.left + 12}px`;
+      tooltip.style.top = `${e.clientY - wrapRect.top + 12}px`;
+    });
+    rect.addEventListener("mouseleave", () => {
+      tooltip.hidden = true;
+    });
+
+    svg.appendChild(rect);
+
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", x + width / 2);
+    text.setAttribute("y", barHeight / 2 + 1);
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("dominant-baseline", "middle");
+    text.setAttribute("fill", "#ffffff");
+    text.textContent = seg.count;
+    svg.appendChild(text);
+
+    x += width;
+  });
+}
+
 const SIGNIN_URL = "https://learn.01founders.co/api/auth/signin";
 
 async function signIn(identifier, password) {
@@ -67,10 +154,12 @@ function decodeUserId(token) {
 function getLevelTitle(level) {
   if (level <= 9) return "Aspiring Developer";
   if (level <= 19) return "Beginner Developer";
-  if (level <= 32) return "Apprentice Developer";
-  if (level <= 41) return "Assistant Developer";
+  if (level <= 29) return "Apprentice Developer";
+  if (level <= 39) return "Assistant Developer";
   if (level <= 49) return "Basic Developer";
-  return "Junior Developer";
+  if (level <= 54) return "Junior Developer";
+  if (level <= 59) return "Confirmed Developer";
+  else return "Full-Stack Developer";
 }
 
 function showLoginView() {
@@ -153,8 +242,8 @@ async function loadIdentification() {
 
   const xpResult = await getTotalXp();
   if (xpResult.success) {
-    document.getElementById("xp-total-value").textContent =
-      xpResult.total.toLocaleString();
+    const xpInKb = Math.round(xpResult.total / 1000);
+    document.getElementById("xp-total-value").textContent = `${xpInKb} kB`;
   }
 
   renderXpChart();
@@ -162,79 +251,38 @@ async function loadIdentification() {
 
   const auditResult = await getAuditStats();
   if (auditResult.success) {
-    const given = auditResult.givenPass + auditResult.givenFail;
     const received = auditResult.receivedPass + auditResult.receivedFail;
-    const totalAll = given + received;
-    const barWidth = 300;
 
-    // top bar: given vs received
-    const givenWidth = totalAll > 0 ? (given / totalAll) * barWidth : 0;
-    const receivedWidth = barWidth - givenWidth;
+    renderSegmentedBar("total-breakdown-svg", "total-breakdown-tooltip", [
+      {
+        count: auditResult.givenTotal,
+        color: "var(--neon-cyan)",
+        label: "Given",
+      },
+      { count: received, color: "var(--neon-purple)", label: "Received" },
+    ]);
 
-    const totalGivenRect = document.getElementById("seg-total-given");
-    const totalReceivedRect = document.getElementById("seg-total-received");
-    totalGivenRect.setAttribute("width", givenWidth);
-    totalReceivedRect.setAttribute("x", givenWidth);
-    totalReceivedRect.setAttribute("width", receivedWidth);
+    const givenSegments = CLOSURE_ORDER.filter(
+      (key) => auditResult.givenCounts[key],
+    ).map((key) => ({
+      count: auditResult.givenCounts[key],
+      color: CLOSURE_COLORS[key] || "#7d8794",
+      label: CLOSURE_LABELS[key] || key,
+    }));
+    renderSegmentedBar(
+      "given-breakdown-svg",
+      "given-breakdown-tooltip",
+      givenSegments,
+    );
 
-    document
-      .getElementById("txt-total-given")
-      .setAttribute("x", givenWidth / 2);
-    document.getElementById("txt-total-given").textContent =
-      givenWidth > 24 ? given : "";
-    document
-      .getElementById("txt-total-received")
-      .setAttribute("x", givenWidth + receivedWidth / 2);
-    document.getElementById("txt-total-received").textContent =
-      receivedWidth > 24 ? received : "";
-
-    // sub bar: given pass vs fail
-    const givenPassWidth =
-      given > 0 ? (auditResult.givenPass / given) * barWidth : 0;
-    const givenFailWidth = barWidth - givenPassWidth;
-
-    document
-      .getElementById("seg-given-pass")
-      .setAttribute("width", givenPassWidth);
-    document.getElementById("seg-given-fail").setAttribute("x", givenPassWidth);
-    document
-      .getElementById("seg-given-fail")
-      .setAttribute("width", givenFailWidth);
-    document
-      .getElementById("txt-given-pass")
-      .setAttribute("x", givenPassWidth / 2);
-    document.getElementById("txt-given-pass").textContent =
-      givenPassWidth > 16 ? auditResult.givenPass : "";
-    document
-      .getElementById("txt-given-fail")
-      .setAttribute("x", givenPassWidth + givenFailWidth / 2);
-    document.getElementById("txt-given-fail").textContent =
-      givenFailWidth > 16 ? auditResult.givenFail : "";
-
-    // sub bar: received pass vs fail
-    const receivedPassWidth =
-      received > 0 ? (auditResult.receivedPass / received) * barWidth : 0;
-    const receivedFailWidth = barWidth - receivedPassWidth;
-
-    document
-      .getElementById("seg-received-pass")
-      .setAttribute("width", receivedPassWidth);
-    document
-      .getElementById("seg-received-fail")
-      .setAttribute("x", receivedPassWidth);
-    document
-      .getElementById("seg-received-fail")
-      .setAttribute("width", receivedFailWidth);
-    document
-      .getElementById("txt-received-pass")
-      .setAttribute("x", receivedPassWidth / 2);
-    document.getElementById("txt-received-pass").textContent =
-      receivedPassWidth > 16 ? auditResult.receivedPass : "";
-    document
-      .getElementById("txt-received-fail")
-      .setAttribute("x", receivedPassWidth + receivedFailWidth / 2);
-    document.getElementById("txt-received-fail").textContent =
-      receivedFailWidth > 16 ? auditResult.receivedFail : "";
+    renderSegmentedBar("received-breakdown-svg", "received-breakdown-tooltip", [
+      {
+        count: auditResult.receivedPass,
+        color: "var(--neon-green)",
+        label: "Pass",
+      },
+      { count: auditResult.receivedFail, color: "var(--fail)", label: "Fail" },
+    ]);
 
     document.getElementById("audit-ratio-text").textContent = auditResult.ratio;
   }

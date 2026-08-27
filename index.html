@@ -99,34 +99,26 @@
       </div>
 
 <div class="audit-ratio">
-  <p class="audit-label">No of audits </p>
-  <p class="audit-sublabel">given vs received</p>
-
-  <svg viewBox="0 0 300 20" preserveAspectRatio="none" class="audit-bar audit-bar-top" role="img" aria-label="audits given vs received">
-    <rect id="seg-total-given" x="0" y="0" width="0" height="20"/>
-    <rect id="seg-total-received" x="0" y="0" width="0" height="20"/>
-    <text id="txt-total-given" y="14" text-anchor="middle"></text>
-    <text id="txt-total-received" y="14" text-anchor="middle"></text>
-  </svg>
+  <p class="audit-label">audits given vs received</p>
+  <div class="audit-bar-wrap">
+    <svg id="total-breakdown-svg" viewBox="0 0 300 20" preserveAspectRatio="none" class="audit-bar audit-bar-top" role="img" aria-label="audits given vs received"></svg>
+    <span class="xp-dot-tooltip" id="total-breakdown-tooltip" hidden></span>
+  </div>
 
   <div class="audit-subgroup">
-    <p class="audit-sublabel">given — pass vs fail</p>
-    <svg viewBox="0 0 300 16" preserveAspectRatio="none" class="audit-bar" role="img" aria-label="given audits, pass vs fail">
-      <rect id="seg-given-pass" x="0" y="0" width="0" height="16"/>
-      <rect id="seg-given-fail" x="0" y="0" width="0" height="16"/>
-      <text id="txt-given-pass" y="11" text-anchor="middle"></text>
-      <text id="txt-given-fail" y="11" text-anchor="middle"></text>
-    </svg>
+    <p class="audit-sublabel">given — by outcome</p>
+    <div class="audit-bar-wrap">
+      <svg id="given-breakdown-svg" viewBox="0 0 300 20" preserveAspectRatio="none" class="audit-bar" role="img" aria-label="given audits by outcome"></svg>
+      <span class="xp-dot-tooltip" id="given-breakdown-tooltip" hidden></span>
+    </div>
   </div>
 
   <div class="audit-subgroup">
     <p class="audit-sublabel">received — pass vs fail</p>
-    <svg viewBox="0 0 300 16" preserveAspectRatio="none" class="audit-bar" role="img" aria-label="received audits, pass vs fail">
-      <rect id="seg-received-pass" x="0" y="0" width="0" height="16"/>
-      <rect id="seg-received-fail" x="0" y="0" width="0" height="16"/>
-      <text id="txt-received-pass" y="11" text-anchor="middle"></text>
-      <text id="txt-received-fail" y="11" text-anchor="middle"></text>
-    </svg>
+    <div class="audit-bar-wrap">
+      <svg id="received-breakdown-svg" viewBox="0 0 300 16" preserveAspectRatio="none" class="audit-bar" role="img" aria-label="received audits, pass vs fail"></svg>
+      <span class="xp-dot-tooltip" id="received-breakdown-tooltip" hidden></span>
+    </div>
   </div>
 
   <p class="audit-ratio-value">ratio <strong id="audit-ratio-text">0.00</strong></p>
@@ -134,28 +126,32 @@
     </section>
 
 <section id="xp" class="card xp-panel" aria-labelledby="xp-heading">
-  <h2 id="xp-heading">xp progression</h2>
-  <svg viewBox="0 0 600 240" class="xp-chart" role="img" aria-label="xp earned over time">
-    <g class="grid-lines">
-      <line x1="44" y1="14" x2="590" y2="14"/>
-      <line x1="44" y1="63" x2="590" y2="63"/>
-      <line x1="44" y1="112" x2="590" y2="112"/>
-      <line x1="44" y1="161" x2="590" y2="161"/>
-      <line x1="44" y1="210" x2="590" y2="210"/>
-    </g>
-    <g class="axis-labels">
-      <text id="y-label-0" x="38" y="14" text-anchor="end" dominant-baseline="middle">0</text>
-      <text id="y-label-1" x="38" y="63" text-anchor="end" dominant-baseline="middle">0</text>
-      <text id="y-label-2" x="38" y="112" text-anchor="end" dominant-baseline="middle">0</text>
-      <text id="y-label-3" x="38" y="161" text-anchor="end" dominant-baseline="middle">0</text>
-      <text id="y-label-4" x="38" y="210" text-anchor="end" dominant-baseline="middle">0</text>
-      <text id="x-label-start" x="44" y="232" text-anchor="start"></text>
-      <text id="x-label-end" x="590" y="232" text-anchor="end"></text>
-    </g>
-    <path id="xp-fill-path" class="xp-fill" fill="rgba(0,242,254,0.08)" stroke="none" d=""/>
-    <path id="xp-line-path" class="xp-line" fill="none" stroke="#00f2fe" stroke-width="2" d=""/>
-    <circle id="xp-point-marker" cx="0" cy="0" r="4" class="xp-point" fill="#00f2fe"/>
-  </svg>
+  <h2 id="xp-heading">fellowship xp progression</h2>
+  <div class="xp-chart-wrap">
+    <svg id="xp-chart-svg" viewBox="0 0 600 240" class="xp-chart" role="img" aria-label="fellowship xp earned over time">
+      <g class="grid-lines">
+        <line x1="44" y1="14" x2="590" y2="14"/>
+        <line x1="44" y1="63" x2="590" y2="63"/>
+        <line x1="44" y1="112" x2="590" y2="112"/>
+        <line x1="44" y1="161" x2="590" y2="161"/>
+        <line x1="44" y1="210" x2="590" y2="210"/>
+      </g>
+      <g class="axis-labels">
+        <text id="y-label-0" x="38" y="14" text-anchor="end" dominant-baseline="middle">0</text>
+        <text id="y-label-1" x="38" y="63" text-anchor="end" dominant-baseline="middle">0</text>
+        <text id="y-label-2" x="38" y="112" text-anchor="end" dominant-baseline="middle">0</text>
+        <text id="y-label-3" x="38" y="161" text-anchor="end" dominant-baseline="middle">0</text>
+        <text id="y-label-4" x="38" y="210" text-anchor="end" dominant-baseline="middle">0</text>
+        <text id="x-label-start" x="44" y="232" text-anchor="start"></text>
+        <text id="x-label-end" x="590" y="232" text-anchor="end"></text>
+      </g>
+      <path id="xp-fill-path" class="xp-fill" fill="rgba(0,242,254,0.08)" stroke="none" d=""/>
+      <path id="xp-line-path" class="xp-line" fill="none" stroke="#00f2fe" stroke-width="2" d=""/>
+      <circle id="xp-point-marker" cx="0" cy="0" r="4" class="xp-point" fill="#00f2fe"/>
+      <g id="xp-project-dots"></g>
+    </svg>
+    <span class="xp-dot-tooltip" id="xp-dot-tooltip" hidden></span>
+  </div>
 </section>
   <section id="xp-by-project" class="card xp-project-panel" aria-labelledby="xp-project-heading">
     <h2 id="xp-project-heading">xp by project</h2>
