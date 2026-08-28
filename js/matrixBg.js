@@ -23,6 +23,11 @@ function initMatrixBackground() {
   resize();
   window.addEventListener("resize", resize);
 
+  const resizeObserver = new ResizeObserver(() => {
+    resize();
+  });
+  resizeObserver.observe(canvas);
+
   const fontSize = 14;
   let columns = Math.floor(canvas.width / fontSize);
   let drops = new Array(columns).fill(1);

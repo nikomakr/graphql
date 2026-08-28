@@ -409,3 +409,18 @@ async function getLevelHistory() {
 
   return { success: true, data: result.data.transaction };
 }
+
+async function getFellowshipStartDate() {
+  const query = `{
+    transaction(where: { path: { _like: "/london/div-01%" } }, order_by: { createdAt: asc }, limit: 1) {
+      createdAt
+    }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success || result.data.transaction.length === 0) {
+    return { success: false };
+  }
+
+  return { success: true, date: result.data.transaction[0].createdAt };
+}

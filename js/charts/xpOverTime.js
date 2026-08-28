@@ -8,6 +8,18 @@ function formatXp(value) {
   return String(Math.round(value));
 }
 
+function positionTooltipSmart(tooltip, wrapRect, clientX, clientY) {
+  const midpoint = wrapRect.left + wrapRect.width / 2;
+  if (clientX < midpoint) {
+    tooltip.style.left = `${clientX - wrapRect.left + 12}px`;
+    tooltip.style.right = "auto";
+  } else {
+    tooltip.style.right = `${wrapRect.right - clientX + 12}px`;
+    tooltip.style.left = "auto";
+  }
+  tooltip.style.top = `${clientY - wrapRect.top + 12}px`;
+}
+
 function formatKb(amount) {
   return Math.round(amount / 1000) + " kB";
 }
@@ -22,14 +34,21 @@ function formatDateLabel(dateInput) {
 }
 
 async function renderXpChart() {
-  const result = await getXpTransactions();
+  const [result, startResult] = await Promise.all([
+    getXpTransactions(),
+    getFellowshipStartDate(),
+  ]);
+
   if (!result.success || result.data.length === 0) {
+    return;
+  }
+  if (!startResult.success) {
     return;
   }
 
   const rows = result.data;
 
-  const startDate = new Date("2026-01-06T00:00:00Z");
+  const startDate = new Date(startResult.date);
   const endDate = new Date();
 
   const leftMargin = 44;
@@ -121,9 +140,7 @@ async function renderXpChart() {
     });
     dot.addEventListener("mousemove", (e) => {
       const wrapRect = svg.parentElement.getBoundingClientRect();
-      tooltip.style.left = "auto";
-      tooltip.style.right = `${wrapRect.right - e.clientX + 12}px`;
-      tooltip.style.top = `${e.clientY - wrapRect.top + 12}px`;
+      positionTooltipSmart(tooltip, wrapRect, e.clientX, e.clientY);
     });
     dot.addEventListener("mouseleave", () => {
       tooltip.hidden = true;

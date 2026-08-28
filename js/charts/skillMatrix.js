@@ -1,28 +1,26 @@
-const TECHNICAL_SKILL_ORDER = [
-  { key: "prog-1", label: "Prog-1" },
-  { key: "algo", label: "Algo" },
-  { key: "devops", label: "DevOps" },
-  { key: "front-end", label: "Front-End" },
-  { key: "back-end", label: "Back-End" },
-  { key: "stats", label: "Statistics" },
-  { key: "game", label: "Game" },
-];
+const KNOWN_TECHNOLOGY_KEYS = ["go", "js", "html", "docker", "sql", "c", "git"];
 
-const TECHNOLOGY_ORDER = [
-  { key: "go", label: "Go" },
-  { key: "js", label: "JS" },
-  { key: "html", label: "HTML" },
-  { key: "docker", label: "Docker" },
-  { key: "sql", label: "SQL" },
-  { key: "c", label: "C" },
-  { key: "git", label: "Git" },
-];
+function prettifySkillKey(key) {
+  return key
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("-");
+}
 
-function mapSkillsToOrder(order, latestMap) {
-  return order.map(({ key, label }) => ({
-    name: label,
-    amount: latestMap[key] || 0,
-  }));
+function classifySkills(latestMap) {
+  const technologies = [];
+  const technicalSkills = [];
+
+  Object.entries(latestMap).forEach(([key, amount]) => {
+    const entry = { name: prettifySkillKey(key), amount };
+    if (KNOWN_TECHNOLOGY_KEYS.includes(key)) {
+      technologies.push(entry);
+    } else {
+      technicalSkills.push(entry);
+    }
+  });
+
+  return { technologies, technicalSkills };
 }
 
 function polarPoint(cx, cy, radius, angleDeg) {
@@ -91,7 +89,11 @@ async function renderSkillMatrix() {
     return;
   }
 
-  const technologies = mapSkillsToOrder(TECHNOLOGY_ORDER, result.latest);
+  const { technologies, technicalSkills } = classifySkills(result.latest);
 
   buildRadar("skill-radar-technologies", technologies);
+
+  if (technicalSkills.length > 0) {
+    buildRadar("skill-radar-technical", technicalSkills);
+  }
 }

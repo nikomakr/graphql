@@ -25,8 +25,14 @@ async function renderLevelMilestones() {
   }
 
   const history = result.data;
-  const currentLevel = history[history.length - 1].amount;
-  const cohortStart = new Date("2026-01-06T00:00:00Z");
+  const currentLevel = Math.max(...history.map((row) => row.amount));
+
+  const startResult = await getFellowshipStartDate();
+  const cohortStart = startResult.success
+    ? new Date(startResult.date)
+    : new Date("2026-01-06T00:00:00Z");
+
+  const byAmount = [...history].sort((a, b) => a.amount - b.amount);
 
   const container = document.getElementById("level-milestones");
   if (!container) {
@@ -39,7 +45,7 @@ async function renderLevelMilestones() {
         tier.threshold === 0
           ? formatMilestoneDate(cohortStart)
           : formatMilestoneDate(
-              history.find((row) => row.amount >= tier.threshold).createdAt,
+              byAmount.find((row) => row.amount >= tier.threshold).createdAt,
             );
       return `
         <div class="milestone-row milestone-done">

@@ -63,8 +63,7 @@ function renderSegmentedBar(svgId, tooltipId, segments) {
     });
     rect.addEventListener("mousemove", (e) => {
       const wrapRect = svg.parentElement.getBoundingClientRect();
-      tooltip.style.left = `${e.clientX - wrapRect.left + 12}px`;
-      tooltip.style.top = `${e.clientY - wrapRect.top + 12}px`;
+      positionTooltipSmart(tooltip, wrapRect, e.clientX, e.clientY);
     });
     rect.addEventListener("mouseleave", () => {
       tooltip.hidden = true;

@@ -207,9 +207,7 @@ async function renderXpByProjectChart() {
     });
     cell.addEventListener("mousemove", (e) => {
       const wrapRect = svg.parentElement.getBoundingClientRect();
-      tooltip.style.left = "auto";
-      tooltip.style.right = `${wrapRect.right - e.clientX + 12}px`;
-      tooltip.style.top = `${e.clientY - wrapRect.top + 12}px`;
+      positionTooltipSmart(tooltip, wrapRect, e.clientX, e.clientY);
     });
     cell.addEventListener("mouseleave", () => {
       tooltip.hidden = true;

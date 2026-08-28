@@ -101,17 +101,16 @@ button { font: inherit; }
 /* ---------- dashboard grid ---------- */
 
 .dashboard {
-  position: relative;
-  overflow: hidden;
   padding: 28px;
   display: grid;
   grid-template-columns: 1.1fr 1fr 1fr;
   grid-template-areas:
-  "profile profile profile"
-  "xp xp skills"
-  "xpproject xpproject xpproject"
-  "projects projects projects"
-  "piscine piscine piscine";
+    "profile profile profile"
+    "xp xp xp"
+    "skills skills skills"
+    "xpproject xpproject xpproject"
+    "projects projects projects"
+    "piscine piscine piscine";
   gap: 20px;
 }
 
@@ -280,7 +279,7 @@ button { font: inherit; }
 .radar-grid polygon,
 .radar-grid line {
   fill: none;
-  stroke: var(--border);
+  stroke: rgba(255, 255, 255, 0.18);
   stroke-width: 1;
 }
 
@@ -352,9 +351,10 @@ button { font: inherit; }
 @media (max-width: 960px) {
   .dashboard {
     grid-template-columns: 1fr 1fr;
-grid-template-areas:
+    grid-template-areas:
       "profile profile"
-      "xp skills"
+      "xp xp"
+      "skills skills"
       "xpproject xpproject"
       "projects projects"
       "piscine piscine";
@@ -797,4 +797,31 @@ grid-template-areas:
   color: var(--text-dim);
   opacity: 0.6;
   font-size: 10px;
+}
+
+.skill-matrix-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.skill-matrix-col {
+  flex: 1 1 260px;
+  min-width: 240px;
+}
+
+.skill-matrix-col .radar-chart {
+  width: 100%;
+  max-width: 320px;
+}
+
+.skill-matrix-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skill-matrix-col .feed-heading {
+  margin-bottom: 18px;
+  text-align: center;
 }
