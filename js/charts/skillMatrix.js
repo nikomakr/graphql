@@ -40,16 +40,10 @@ function buildRadar(svgId, skills) {
   const maxRadius = 90;
 
   let gridContent = "";
-  [0.33, 0.66, 1].forEach((frac) => {
-    const pts = skills
-      .map((s, i) => {
-        const angle = i * (360 / n);
-        const p = polarPoint(cx, cy, maxRadius * frac, angle);
-        return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
-      })
-      .join(" ");
-    gridContent += `<polygon points="${pts}"/>`;
-  });
+  for (let ring = 1; ring <= 10; ring++) {
+    const r = (maxRadius * ring) / 10;
+    gridContent += `<circle cx="${cx}" cy="${cy}" r="${r.toFixed(1)}" fill="none"/>`;
+  }
 
   skills.forEach((s, i) => {
     const angle = i * (360 / n);

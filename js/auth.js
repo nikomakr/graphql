@@ -248,6 +248,7 @@ async function loadIdentification() {
   renderXpChart();
   renderXpByProjectChart();
   renderLevelMilestones();
+  const auditXpResult = await getAuditXpRatio();
 
   const auditResult = await getAuditStats();
   if (auditResult.success) {
@@ -284,7 +285,8 @@ async function loadIdentification() {
       { count: auditResult.receivedFail, color: "var(--fail)", label: "Fail" },
     ]);
 
-    document.getElementById("audit-ratio-text").textContent = auditResult.ratio;
+    document.getElementById("audit-ratio-text").textContent =
+      auditXpResult.success ? auditXpResult.ratio : auditResult.ratio;
   }
 
   renderPiscineStats();

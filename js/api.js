@@ -424,3 +424,25 @@ async function getFellowshipStartDate() {
 
   return { success: true, date: result.data.transaction[0].createdAt };
 }
+
+async function getAuditXpRatio() {
+  const query = `{
+    up: transaction(where: { type: { _eq: "up" }, invalidatedAt: { _is_null: true } }) { amount }
+    down: transaction(where: { type: { _eq: "down" }, invalidatedAt: { _is_null: true } }) { amount }
+  }`;
+
+  const result = await runQuery(query);
+  if (!result.success) {
+    return result;
+  }
+
+  const givenBytes = result.data.up.reduce((sum, row) => sum + row.amount, 0);
+  const receivedBytes = result.data.down.reduce(
+    (sum, row) => sum + row.amount,
+    0,
+  );
+  const ratio =
+    receivedBytes > 0 ? (givenBytes / receivedBytes).toFixed(2) : "0.00";
+
+  return { success: true, givenBytes, receivedBytes, ratio };
+}

@@ -223,7 +223,8 @@ button { font: inherit; }
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-dim);
-  margin-bottom: 6px;
+  margi
+  n-bottom: 6px;
 }
 
 .up-label { color: var(--neon-green); }
@@ -231,7 +232,8 @@ button { font: inherit; }
 
 .audit-ratio-value {
   margin: 8px 0 0;
-  font-size: 12px;
+  font-size: 20px;
+  font-weight: 600;
   font-family: var(--font-mono);
   color: var(--text-dim);
 }
@@ -277,6 +279,7 @@ button { font: inherit; }
 .radar-chart { width: 100%; max-width: 240px; height: auto; display: block; margin: 0 auto; }
 
 .radar-grid polygon,
+.radar-grid circle,
 .radar-grid line {
   fill: none;
   stroke: rgba(255, 255, 255, 0.18);
@@ -752,8 +755,9 @@ grid-template-areas:
 }
 
 .level-milestones {
-  flex: 1 1 340px;
+  flex: 0 1 340px;
   min-width: 320px;
+  margin: 0 auto;
   font-family: var(--font-mono);
   font-size: 10px;
 }
