@@ -4,7 +4,7 @@ function exerciseRow(ex) {
   return `
     <article class="project-row">
       <header>
-        <p class="project-name">${ex.name}</p>
+        <p class="project-name">${escapeHtml(ex.name)}</p>
         <p class="project-meta">${ex.attempts} attempt${ex.attempts === 1 ? "" : "s"}</p>
       </header>
       <span class="badge ${badgeClass}">${badgeText}</span>
@@ -16,15 +16,16 @@ function piscineGroupBlock(p) {
   const preview = p.exercises.slice(0, 3).map(exerciseRow).join("");
   const full = p.exercises.map(exerciseRow).join("");
   const total = p.exercises.length;
+  const key = escapeHtml(p.key);
 
   return `
     <div class="piscine-group">
-      <p class="feed-heading">${p.label} — ${p.passCount}/${total} passed</p>
-      <div class="feed-scroll piscine-preview" data-key="${p.key}">${preview}</div>
+      <p class="feed-heading">${escapeHtml(p.label)} — ${p.passCount}/${total} passed</p>
+      <div class="feed-scroll piscine-preview" data-key="${key}">${preview}</div>
       ${
         total > 3
-          ? `<button type="button" class="view-all-btn" data-key="${p.key}" data-total="${total}">view all ${total}</button>
-           <div class="feed-scroll piscine-full" data-key="${p.key}" hidden>${full}</div>`
+          ? `<button type="button" class="view-all-btn" data-key="${key}" data-total="${total}">view all ${total}</button>
+           <div class="feed-scroll piscine-full" data-key="${key}" hidden>${full}</div>`
           : ""
       }
     </div>

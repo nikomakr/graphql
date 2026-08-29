@@ -1,10 +1,62 @@
 const GRAPHQL_URL = "https://learn.01founders.co/api/graphql-engine/v1/graphql";
 
+const HTML_ESCAPES = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (ch) => HTML_ESCAPES[ch]);
+}
+
+const QUERY_CACHE_PREFIX = "gqlcache:";
+const QUERY_CACHE_TTL_MS = 5 * 60 * 1000;
+
+function queryCacheKey(query, variables) {
+  return QUERY_CACHE_PREFIX + query + JSON.stringify(variables);
+}
+
+function readQueryCache(key) {
+  try {
+    const raw = sessionStorage.getItem(key);
+    if (!raw) return null;
+    const entry = JSON.parse(raw);
+    if (Date.now() - entry.savedAt > QUERY_CACHE_TTL_MS) {
+      sessionStorage.removeItem(key);
+      return null;
+    }
+    return entry.data;
+  } catch (err) {
+    return null;
+  }
+}
+
+function writeQueryCache(key, data) {
+  try {
+    sessionStorage.setItem(key, JSON.stringify({ data, savedAt: Date.now() }));
+  } catch (err) {}
+}
+
+function clearQueryCache() {
+  Object.keys(sessionStorage)
+    .filter((key) => key.startsWith(QUERY_CACHE_PREFIX))
+    .forEach((key) => sessionStorage.removeItem(key));
+}
+
 async function runQuery(query, variables = {}) {
   const token = getToken();
 
   if (!token) {
     return { success: false, error: "no_token" };
+  }
+
+  const cacheKey = queryCacheKey(query, variables);
+  const cached = readQueryCache(cacheKey);
+  if (cached) {
+    return cached;
   }
 
   let response;
@@ -32,7 +84,9 @@ async function runQuery(query, variables = {}) {
     return { success: false, error: "graphql_error", details: json.errors };
   }
 
-  return { success: true, data: json.data };
+  const result = { success: true, data: json.data };
+  writeQueryCache(cacheKey, result);
+  return result;
 }
 
 async function getIdentification() {
@@ -111,24 +165,8 @@ async function getPiscineResults() {
   return { success: true, data: result.data.result };
 }
 
-function isGoPiscine(path) {
-  return path.startsWith("/london/piscine-go-s2wft");
-}
-
-function isJSPiscine(path) {
-  return path.startsWith("/london/discovery-piscine-3w");
-}
-
 function isFellowshipJSPiscine(path) {
   return path.startsWith("/london/div-01/piscine-js-up");
-}
-
-function isCheckpoints(path) {
-  return path.startsWith("/london/div-01/check-points");
-}
-
-function isFellowship(path) {
-  return path.startsWith("/london/div-01") && !isFellowshipJSPiscine(path);
 }
 
 function isDirectFellowshipProject(path) {

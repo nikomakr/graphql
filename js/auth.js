@@ -120,6 +120,7 @@ async function signIn(identifier, password) {
 }
 
 function storeToken(token) {
+  clearQueryCache();
   sessionStorage.setItem("jwt", token);
 }
 
@@ -129,6 +130,7 @@ function getToken() {
 
 function clearToken() {
   sessionStorage.removeItem("jwt");
+  clearQueryCache();
 }
 
 function isTokenValid(token) {
@@ -137,16 +139,6 @@ function isTokenValid(token) {
     return payload.exp * 1000 > Date.now();
   } catch (err) {
     return false;
-  }
-}
-
-function decodeUserId(token) {
-  try {
-    const payload = token.split(".")[1];
-    const decoded = JSON.parse(atob(payload));
-    return decoded["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-  } catch (err) {
-    return null;
   }
 }
 
@@ -190,7 +182,7 @@ function passedProjectRow(item) {
   return `
     <article class="project-row">
       <header>
-        <p class="project-name">${item.name}</p>
+        <p class="project-name">${escapeHtml(item.name)}</p>
         <p class="project-meta">passed ${dateStr}</p>
       </header>
       <span class="badge badge-pass">pass</span>
@@ -199,13 +191,28 @@ function passedProjectRow(item) {
 }
 
 async function loadProjectsFeed() {
+  const feedEl = document.querySelector("#projects .feed-scroll");
+  showSectionLoading(feedEl, true);
+
   const result = await getPassedProjects();
+
   if (!result.success) {
+    showSectionMessage(
+      feedEl,
+      "Couldn't load projects — try refreshing.",
+      "error",
+      loadProjectsFeed,
+      true,
+    );
     return;
   }
-  document.querySelector("#projects .feed-scroll").innerHTML = result.items
-    .map(passedProjectRow)
-    .join("");
+
+  if (result.items.length === 0) {
+    showSectionMessage(feedEl, "No passed projects yet.", "empty", null, true);
+    return;
+  }
+
+  feedEl.innerHTML = result.items.map(passedProjectRow).join("");
 }
 
 document.getElementById("logout-btn").addEventListener("click", logout);
@@ -224,14 +231,67 @@ function clearError() {
 document.getElementById("identifier").addEventListener("input", clearError);
 document.getElementById("password").addEventListener("input", clearError);
 
-async function loadIdentification() {
-  const result = await getIdentification();
+function showSectionMessage(
+  container,
+  message,
+  type = "error",
+  onRetry,
+  replace = false,
+) {
+  if (!container) return;
+
+  if (replace) {
+    container.innerHTML = "";
+  }
+
+  let el = replace
+    ? null
+    : container.querySelector(":scope > .section-message");
+  if (!el) {
+    el = document.createElement("p");
+    el.className = "section-message";
+    container.prepend(el);
+  }
+
+  el.dataset.type = type;
+  el.hidden = false;
+  el.textContent = "";
+  el.append(message);
+
+  if (onRetry) {
+    const retryBtn = document.createElement("button");
+    retryBtn.type = "button";
+    retryBtn.className = "section-retry";
+    retryBtn.textContent = "Retry";
+    retryBtn.addEventListener("click", () => onRetry());
+    el.append(" ", retryBtn);
+  }
+}
+
+function showSectionLoading(container, replace = false) {
+  showSectionMessage(container, "Loading…", "loading", null, replace);
+}
+
+function clearSectionMessage(container) {
+  const el = container?.querySelector(":scope > .section-message");
+  if (el) el.hidden = true;
+}
+
+async function loadProfileGroup() {
+  const container = document.getElementById("profile");
+  showSectionLoading(container);
+
+  const [result, levelResult, xpResult] = await Promise.all([
+    getIdentification(),
+    getCurrentLevel(),
+    getTotalXp(),
+  ]);
+
   if (result.success) {
     document.querySelector(".handle").textContent = result.data.login;
     document.querySelector(".user-id").textContent = `id #${result.data.id}`;
   }
 
-  const levelResult = await getCurrentLevel();
   if (levelResult.success) {
     document.getElementById("level-value").textContent = levelResult.level;
     document.getElementById("dev-title").textContent = getLevelTitle(
@@ -239,18 +299,32 @@ async function loadIdentification() {
     );
   }
 
-  const xpResult = await getTotalXp();
   if (xpResult.success) {
     const xpInKb = Math.round(xpResult.total / 1000);
     document.getElementById("xp-total-value").textContent = `${xpInKb} kB`;
   }
 
-  renderXpChart();
-  renderXpByProjectChart();
-  renderLevelMilestones();
-  const auditXpResult = await getAuditXpRatio();
+  if (result.success && levelResult.success && xpResult.success) {
+    clearSectionMessage(container);
+  } else {
+    showSectionMessage(
+      container,
+      "Some profile data couldn't be loaded.",
+      "error",
+      loadProfileGroup,
+    );
+  }
+}
 
-  const auditResult = await getAuditStats();
+async function loadAuditGroup() {
+  const container = document.querySelector(".audit-ratio");
+  showSectionLoading(container);
+
+  const [auditXpResult, auditResult] = await Promise.all([
+    getAuditXpRatio(),
+    getAuditStats(),
+  ]);
+
   if (auditResult.success) {
     const received = auditResult.receivedPass + auditResult.receivedFail;
 
@@ -287,14 +361,24 @@ async function loadIdentification() {
 
     document.getElementById("audit-ratio-text").textContent =
       auditXpResult.success ? auditXpResult.ratio : auditResult.ratio;
+
+    clearSectionMessage(container);
+  } else {
+    showSectionMessage(
+      container,
+      "Couldn't load audit stats.",
+      "error",
+      loadAuditGroup,
+    );
   }
+}
 
-  renderPiscineStats();
-  renderSkillMatrix();
-
-  loadProjectsFeed();
+async function loadProjectStats() {
+  const container = document.querySelector("#projects .project-ratio");
+  showSectionLoading(container);
 
   const projectResult = await getProjectPassFail();
+
   if (projectResult.success) {
     document.getElementById("project-pass-count").textContent =
       projectResult.pass;
@@ -302,7 +386,31 @@ async function loadIdentification() {
       projectResult.fail;
     document.getElementById("project-pass-pct").textContent =
       `${projectResult.passPct}%`;
+
+    clearSectionMessage(container);
+  } else {
+    showSectionMessage(
+      container,
+      "Couldn't load project stats.",
+      "error",
+      loadProjectStats,
+    );
   }
+}
+
+async function loadIdentification() {
+  renderXpChart();
+  renderXpByProjectChart();
+  renderLevelMilestones();
+  renderPiscineStats();
+  renderSkillMatrix();
+
+  await Promise.all([
+    loadProfileGroup(),
+    loadAuditGroup(),
+    loadProjectStats(),
+    loadProjectsFeed(),
+  ]);
 }
 
 document.getElementById("login-form").addEventListener("submit", async (e) => {
@@ -316,8 +424,6 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 
   if (result.success) {
     storeToken(result.token);
-    const userId = decodeUserId(result.token);
-    console.log("logged in, user id:", userId);
     showProfileView();
     loadIdentification();
   } else if (result.error === "network") {

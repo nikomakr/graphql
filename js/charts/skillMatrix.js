@@ -67,7 +67,7 @@ function buildRadar(svgId, skills) {
     const cosVal = Math.cos(((angle - 90) * Math.PI) / 180);
     const anchor =
       Math.abs(cosVal) < 0.3 ? "middle" : p.x > cx ? "start" : "end";
-    labelContent += `<text x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="${anchor}" class="radar-label">${s.name}</text>`;
+    labelContent += `<text x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="${anchor}" class="radar-label">${escapeHtml(s.name)}</text>`;
   });
 
   svg.innerHTML = `

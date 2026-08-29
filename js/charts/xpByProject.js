@@ -176,7 +176,7 @@ async function renderXpByProjectChart() {
       const nameLines = plan.words
         .map(
           (word, li) =>
-            `<tspan x="${(rect.x + 6).toFixed(1)}" dy="${li === 0 ? 0 : plan.lineHeight}">${word}</tspan>`,
+            `<tspan x="${(rect.x + 6).toFixed(1)}" dy="${li === 0 ? 0 : plan.lineHeight}">${escapeHtml(word)}</tspan>`,
         )
         .join("");
 
@@ -192,7 +192,7 @@ async function renderXpByProjectChart() {
       }
     }
 
-    content += `<g class="treemap-cell" data-name="${rect.name}" data-value="${formatXp(rect.amount)}">
+    content += `<g class="treemap-cell" data-name="${escapeHtml(rect.name)}" data-value="${formatXp(rect.amount)}">
       <rect x="${rect.x.toFixed(1)}" y="${rect.y.toFixed(1)}" width="${rect.width.toFixed(1)}" height="${rect.height.toFixed(1)}" fill="${color}" fill-opacity="0.7" stroke="var(--void)" stroke-width="2"/>
       ${labelMarkup}
     </g>`;
