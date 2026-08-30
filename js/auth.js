@@ -142,6 +142,15 @@ function isTokenValid(token) {
   }
 }
 
+function decodeUserId(token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
+  } catch (err) {
+    return null;
+  }
+}
+
 function getLevelTitle(level) {
   if (level <= 10) return "Aspiring Developer";
   if (level <= 20) return "Beginner Developer";

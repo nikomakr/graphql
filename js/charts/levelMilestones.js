@@ -58,7 +58,6 @@ async function renderLevelMilestones() {
 
     return `
       <div class="milestone-row milestone-pending">
-        <span class="milestone-check"></span>
         <span class="milestone-title">${tier.title} <span class="milestone-range">(Levels: ${tier.range})</span></span>
       </div>
     `;

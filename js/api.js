@@ -148,12 +148,10 @@ async function getXpTransactions() {
 async function getPiscineResults() {
   const query = `{
     result(where: { path: { _like: "%piscine%" } }) {
-      id
       grade
       path
       objectId
       object { name }
-      createdAt
     }
   }`;
 
@@ -189,11 +187,10 @@ async function getTotalXp() {
 }
 
 async function getAuditStats() {
-  const idResult = await getIdentification();
-  if (!idResult.success) {
-    return idResult;
+  const myId = decodeUserId(getToken());
+  if (!myId) {
+    return { success: false, error: "no_token" };
   }
-  const myId = idResult.data.id;
 
   const query = `{
     given: audit(where: { auditorId: { _eq: ${myId} } }) { closureType grade }
@@ -278,7 +275,6 @@ async function getProjectPassFail() {
   const query = `{
     result(where: { object: { type: { _eq: "project" } } }) {
       grade
-      object { type }
     }
   }`;
 
@@ -409,7 +405,6 @@ async function getSkillLevels() {
     transaction(where: { type: { _like: "skill_%" }, invalidatedAt: { _is_null: true } }, order_by: { createdAt: desc }) {
       type
       amount
-      createdAt
     }
   }`;
 

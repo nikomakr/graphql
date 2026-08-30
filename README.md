@@ -25,18 +25,18 @@ Queries the platform's GraphQL endpoint using all three required query styles:
 Displays user information including:
 - Basic identification (id, login)
 - XP amount
-- Additional data points, chosen to complement the statistics below
+- Additional data points, chosen to complement the statistics below: developer level and title, level milestone timeline, project PASS/FAIL rate, and piscine (JS/Go) PASS/FAIL with attempts per exercise
 
 ### Statistics (SVG)
 At least two graphs are required by the brief; this project includes five, combining interactive and animated SVG:
 
 | Graph | Type |
 |---|---|
-| XP earned over time | Animated line graph |
-| XP earned by project | Bar graph |
-| Audit ratio | Interactive graph |
-| Project PASS/FAIL ratio | Ratio graph |
-| Piscine (JS/Go) PASS/FAIL and attempts per exercise | Combined stats |
+| XP earned over time | Animated line/area chart |
+| XP earned by project | Squarified treemap |
+| Skill levels (technologies / technical skills) | Radar chart |
+| Audits given vs received | Segmented bar chart |
+| Given/received audits by outcome | Segmented bar charts (interactive tooltips) |
 
 ## Tech stack
 
@@ -52,15 +52,16 @@ graphql-profile/
 ├── css/
 │   └── style.css
 ├── js/
-│   ├── auth.js         # signin request, JWT storage, logout, JWT decode
-│   ├── api.js           # GraphQL query functions
-│   ├── app.js            # view switching, wires everything together
+│   ├── auth.js              # signin, JWT storage/decode, view switching, section rendering
+│   ├── api.js                # GraphQL query functions, response caching
+│   ├── matrixBg.js             # animated canvas background
 │   └── charts/
-│       ├── xpOverTime.js
-│       ├── xpByProject.js
-│       ├── auditRatio.js
-│       ├── passFailRatio.js
-│       └── piscineStats.js
+│       ├── xpOverTime.js        # XP-over-time line/area chart
+│       ├── xpByProject.js        # XP-by-project treemap
+│       ├── levelMilestones.js     # level milestone timeline
+│       ├── skillMatrix.js          # skill radar charts
+│       └── piscineStats.js          # piscine exercise breakdown
+├── AUDIT.md
 └── README.md
 ```
 

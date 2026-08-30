@@ -120,6 +120,7 @@ button {
 /* ---------- dashboard grid ---------- */
 
 .dashboard {
+  position: relative;
   padding: 28px;
   display: grid;
   grid-template-columns: 1.1fr 1fr 1fr;
@@ -130,7 +131,7 @@ button {
     "xpproject xpproject xpproject"
     "projects projects projects"
     "piscine piscine piscine";
-  gap: 20px;
+  gap: 40px;
 }
 
 #piscine {
@@ -189,17 +190,19 @@ button {
 /* ---------- profile widget ---------- */
 
 .profile-widget {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 32px;
-  flex-wrap: wrap;
 }
 
 .profile-identity {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 16px;
+  text-align: center;
+  min-width: 0;
 }
 
 .avatar-frame {
@@ -255,13 +258,20 @@ button {
 }
 
 .audit-ratio {
-  min-width: 220px;
-  flex: 1;
-  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  min-width: 0;
+  gap: 10px;
+}
+
+.audit-label {
+  margin: 0;
 }
 
 .audit-ratio-value {
-  margin: 8px 0 0;
+  margin: 0;
   font-size: 20px;
   font-weight: 600;
   font-family: var(--font-mono);
@@ -409,6 +419,9 @@ button {
       "projects projects"
       "piscine piscine";
   }
+  .profile-widget {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 680px) {
@@ -432,10 +445,6 @@ button {
       "projects"
       "piscine";
     padding: 16px;
-  }
-  .profile-widget {
-    flex-direction: column;
-    align-items: flex-start;
   }
 }
 
@@ -696,7 +705,7 @@ button {
 }
 
 .audit-subgroup {
-  margin-top: 10px;
+  margin: 0;
 }
 
 .audit-bar-top {
@@ -876,19 +885,21 @@ button {
 }
 
 .level-milestones {
-  flex: 0 1 340px;
-  min-width: 320px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   font-family: var(--font-mono);
   font-size: 10px;
+  min-width: 0;
 }
 
 .milestone-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 4px 8px;
   padding: 3px 0;
-  white-space: nowrap;
 }
 
 .milestone-check {
