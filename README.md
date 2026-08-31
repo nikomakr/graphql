@@ -21,11 +21,17 @@ Queries the platform's GraphQL endpoint using all three required query styles:
 - **Nested queries** — e.g. results joined with their related user or object data
 - **Argument-based queries** — e.g. filtering transactions by type or ordering by date
 
+### GraphiQL console
+A self-built query console (`js/queryConsole.js`), separate from the platform's own hosted GraphiQL, is embedded at the bottom of the profile page:
+- Free-text textarea to run any GraphQL query against the live endpoint, using the same authenticated request path as every chart on the page
+- One-click example buttons that load the exact standard, nested and argument-based query strings used elsewhere in the app, plus a "your audit stats" query built from the logged-in user's own id
+- Lets any query result be checked live against what a given chart or stat displays
+
 ### Profile UI
 Displays user information including:
 - Basic identification (id, login)
-- XP amount
-- Additional data points, chosen to complement the statistics below: developer level and title, level milestone timeline, project PASS/FAIL rate, and piscine (JS/Go) PASS/FAIL with attempts per exercise
+- XP amount (scoped to the Fellowship path, excluding the JS piscine)
+- Additional data points, chosen to complement the statistics below: developer level and title, level milestone timeline, audit ratio, project PASS/FAIL rate, and piscine PASS/FAIL with attempts per exercise (grouped dynamically per piscine, e.g. JS/Go)
 
 ### Statistics (SVG)
 At least two graphs are required by the brief; this project includes five, combining interactive and animated SVG:
@@ -48,6 +54,8 @@ At least two graphs are required by the brief; this project includes five, combi
 
 ```
 graphql-profile/
+├── .github/
+│   └── copilot-instructions.md  # Copilot review-only persona (see Tooling section)
 ├── index.html
 ├── css/
 │   └── style.css
@@ -55,6 +63,7 @@ graphql-profile/
 │   ├── auth.js              # signin, JWT storage/decode, view switching, section rendering
 │   ├── api.js                # GraphQL query functions, response caching
 │   ├── matrixBg.js             # animated canvas background
+│   ├── queryConsole.js          # self-built GraphiQL-style query console
 │   └── charts/
 │       ├── xpOverTime.js        # XP-over-time line/area chart
 │       ├── xpByProject.js        # XP-by-project treemap
@@ -83,6 +92,11 @@ graphql-profile/
 - JWT-based authentication and authorisation
 - Basics of human-computer interface and UI/UX
 - Static site hosting
+
+## Tooling & Copilot Integration
+
+* **AI Code Coaching:** A [`.github/copilot-instructions.md`](.github/copilot-instructions.md) configuration is included to tailor GitHub Copilot's behaviour in this repo (CLI and IDE).
+* **Purpose:** It puts Copilot into a review-only mode — categorised performance, security, architecture, and infrastructure feedback with a "mental model" explanation per finding — and explicitly forbids it from generating or rewriting code.
 
 ## Hosting
 

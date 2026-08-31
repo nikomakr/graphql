@@ -202,6 +202,10 @@ async function getAuditStats() {
     return result;
   }
 
+  const notInvalidated = (row) => row.closureType !== "invalidated";
+  const givenRows = result.data.given.filter(notInvalidated);
+  const receivedRows = result.data.received.filter(notInvalidated);
+
   function countByClosure(rows) {
     const counts = {};
     rows.forEach((row) => {
@@ -211,11 +215,11 @@ async function getAuditStats() {
     return counts;
   }
 
-  const givenCounts = countByClosure(result.data.given);
+  const givenCounts = countByClosure(givenRows);
 
   let receivedPass = 0;
   let receivedFail = 0;
-  result.data.received.forEach((row) => {
+  receivedRows.forEach((row) => {
     if (row.grade === null) return;
     if (row.grade >= 1) {
       receivedPass++;
@@ -224,8 +228,8 @@ async function getAuditStats() {
     }
   });
 
-  const given = result.data.given.length;
-  const received = result.data.received.length;
+  const given = givenRows.length;
+  const received = receivedRows.length;
   const ratio = received > 0 ? (given / received).toFixed(2) : "0.00";
 
   return {

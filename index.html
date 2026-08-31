@@ -71,6 +71,7 @@
                 name="identifier"
                 placeholder="username or email"
                 autocomplete="username"
+                maxlength="254"
                 required
               />
             </div>
@@ -106,6 +107,7 @@
                 name="password"
                 placeholder="••••••••"
                 autocomplete="current-password"
+                maxlength="128"
                 required
               />
             </div>
@@ -457,6 +459,44 @@
             <h2 id="piscine-heading">piscine stats</h2>
             <div id="piscine-groups"></div>
           </section>
+
+          <section
+            id="query-console"
+            class="card query-console-panel"
+            aria-labelledby="query-console-heading"
+          >
+            <h2 id="query-console-heading">graphiql console</h2>
+            <p class="query-console-hint">
+              Run any GraphQL query against the live endpoint — the same one
+              every section above is built from.
+            </p>
+            <div class="query-console-examples">
+              <button type="button" class="query-example-btn" data-example="normal">
+                Normal query
+              </button>
+              <button type="button" class="query-example-btn" data-example="nested">
+                Nested query
+              </button>
+              <button type="button" class="query-example-btn" data-example="argument">
+                Argument-based query
+              </button>
+              <button type="button" class="query-example-btn" data-example="audit">
+                Audit stats (yours)
+              </button>
+            </div>
+            <textarea
+              id="query-console-input"
+              class="query-console-input"
+              spellcheck="false"
+              rows="6"
+            >{ user { id login } }</textarea>
+            <button type="button" id="query-console-run" class="query-console-run">
+              Run query
+            </button>
+            <div id="query-console-result" class="query-console-result">
+              <pre id="query-console-output" class="query-console-output" hidden></pre>
+            </div>
+          </section>
         </main>
       </div>
     </main>
@@ -469,5 +509,6 @@
     <script src="js/charts/levelMilestones.js"></script>
     <script src="js/charts/skillMatrix.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/queryConsole.js"></script>
   </body>
 </html>

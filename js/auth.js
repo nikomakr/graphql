@@ -1,7 +1,6 @@
 const CLOSURE_COLORS = {
   succeeded: "#00ff66",
   failed: "#ff3860",
-  invalidated: "#7f00ff",
   pending: "#00f2fe",
   expired: "#3a4150",
   unused: "#232a35",
@@ -13,7 +12,6 @@ const CLOSURE_COLORS = {
 const CLOSURE_LABELS = {
   succeeded: "Succeeded",
   failed: "Failed",
-  invalidated: "Invalidated",
   pending: "Pending",
   expired: "Expired",
   unused: "Unused",
@@ -25,7 +23,6 @@ const CLOSURE_LABELS = {
 const CLOSURE_ORDER = [
   "succeeded",
   "failed",
-  "invalidated",
   "pending",
   "expired",
   "unused",
@@ -85,8 +82,17 @@ function renderSegmentedBar(svgId, tooltipId, segments) {
 }
 
 const SIGNIN_URL = "https://learn.01founders.co/api/auth/signin";
+const MAX_IDENTIFIER_LENGTH = 254;
+const MAX_PASSWORD_LENGTH = 128;
 
 async function signIn(identifier, password) {
+  if (
+    identifier.length > MAX_IDENTIFIER_LENGTH ||
+    password.length > MAX_PASSWORD_LENGTH
+  ) {
+    return { success: false, error: "too_long" };
+  }
+
   const encoded = btoa(`${identifier}:${password}`);
 
   let response;
@@ -437,6 +443,8 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     loadIdentification();
   } else if (result.error === "network") {
     showError("Can't reach the server. Check your connection and try again.");
+  } else if (result.error === "too_long") {
+    showError("Username/email or password is too long.");
   } else {
     showError("Incorrect username/email or password.");
   }
