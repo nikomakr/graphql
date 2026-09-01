@@ -1,5 +1,7 @@
 # GraphQL Profile
 
+![GraphQL Profile demo](GraphQL.gif)
+
 A personal profile page built by querying the school's GraphQL API. The project covers authentication with JWT, GraphQL querying (standard, nested and argument-based), a profile UI, and SVG-based statistics graphs — hosted as a static site.
 
 ## Overview
@@ -49,6 +51,7 @@ At least two graphs are required by the brief; this project includes five, combi
 - HTML, CSS, JavaScript (no framework)
 - SVG for all graphs (hand-built, no charting library)
 - Hosted as a static site
+- Containerized with Docker (nginx:alpine)
 
 ## Project structure
 
@@ -56,6 +59,8 @@ At least two graphs are required by the brief; this project includes five, combi
 graphql-profile/
 ├── .github/
 │   └── copilot-instructions.md  # Copilot review-only persona (see Tooling section)
+├── Dockerfile
+├── GraphQL.gif
 ├── index.html
 ├── css/
 │   └── style.css
@@ -80,6 +85,25 @@ graphql-profile/
 2. Open `index.html` in a browser, or serve the folder with any static file server
 3. Log in with your platform username/email and password
 4. View your profile and statistics
+
+## Running with Docker
+
+The project can also be served via a containerized nginx instead of a local static file server.
+
+1. Build the image:
+   ```bash
+   docker build -t graphql-profile .
+   ```
+2. Run it, mapping container port 80 to a local port:
+   ```bash
+   docker run -d -p 8080:80 --name graphql-profile graphql-profile
+   ```
+3. Open [http://localhost:8080](http://localhost:8080)
+
+Stop and remove the container when done:
+```bash
+docker stop graphql-profile && docker rm graphql-profile
+```
 
 ## API reference
 
